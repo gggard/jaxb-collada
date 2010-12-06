@@ -55,6 +55,8 @@ public class MaxLoaderTest extends TestCase {
 		assertNotNull(mesh.normals);
 		//Max normals equate to number of vertices
 		assertEquals(mesh.normals.length, mesh.numOfVerts);
+		//Ensure we have a material
+		assertNotNull(m.getMaterial(0));
 	}
 
 }

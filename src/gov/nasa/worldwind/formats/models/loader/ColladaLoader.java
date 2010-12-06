@@ -12,9 +12,11 @@ package gov.nasa.worldwind.formats.models.loader;
 
 import gov.nasa.worldwind.formats.models.ModelLoadException;
 import gov.nasa.worldwind.formats.models.geometry.Face;
+import gov.nasa.worldwind.formats.models.geometry.Material;
 import gov.nasa.worldwind.formats.models.geometry.Model;
 import gov.nasa.worldwind.formats.models.geometry.Vec4;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -80,7 +82,11 @@ public class ColladaLoader implements iLoader {
 			}
 			if(library instanceof LibraryMaterials)
 			{
-				this.parseMaterials((LibraryMaterials)library);
+				this.parseMaterials((LibraryMaterials)library,output);
+			}
+			if(library instanceof LibraryEffects)
+			{
+				this.parseEffects((LibraryMaterials)library,output);
 			}
 		}
 		
@@ -88,8 +94,28 @@ public class ColladaLoader implements iLoader {
 			
 	}
 
-	private void parseMaterials(LibraryMaterials library) {
+	private void parseEffects(LibraryMaterials library, Model output) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void parseMaterials(LibraryMaterials library,Model output) {
 		// TODO create a list of Materials
+		List<org.collada._2005._11.colladaschema.Material> matlist = library.getMaterials();
+		Map<String,Material> matSrc = new HashMap<String, Material>();
+		for (org.collada._2005._11.colladaschema.Material material : matlist) {
+			Material mat = new Material();
+			String matId = material.getId();
+			// To get color need to link material to Effects
+			mat.ambientColor = Color.BLUE;
+		    mat.specularColor = Color.BLUE;
+		    mat.diffuseColor = Color.BLUE;
+		    mat.emissive = Color.BLUE;
+		    mat.shininess = 1.0f;
+		    mat.shininess2 = 1.0f;
+		    mat.transparency = 0.0f;
+			output.addMaterial(mat);
+		}
 		
 	}
 
@@ -134,6 +160,7 @@ public class ColladaLoader implements iLoader {
 				//Calculate bounds of models
 				for (Vec4 vec4 : vertices) {
 					targetMesh.bounds.calc(vec4);
+					output.getBounds().calc(vec4);
 				}
 				
 				//Read vec4 to sourceMap

@@ -57,6 +57,7 @@ public class ColladaTest extends TestCase {
 		assertNotNull(mesh.normals);
 		//Collada normals equate to number of faces
 		assertEquals(mesh.normals.length, mesh.numOfFaces);
+		assertNotNull(m.getMaterial(0));
 	}
 
 }
