@@ -33,6 +33,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import org.collada._2005._11.colladaschema.*;
+import org.collada._2005._11.colladaschema.ProfileCOMMON.Technique.Lambert;
+import org.collada._2005._11.colladaschema.ProfileCOMMON.Technique.Phong;
 import org.collada._2005._11.colladaschema.Source.TechniqueCommon;
 
 public class ColladaLoader implements iLoader {
@@ -86,7 +88,7 @@ public class ColladaLoader implements iLoader {
 			}
 			if(library instanceof LibraryEffects)
 			{
-				this.parseEffects((LibraryMaterials)library,output);
+				this.parseEffects((LibraryEffects)library,output);
 			}
 		}
 		
@@ -94,27 +96,57 @@ public class ColladaLoader implements iLoader {
 			
 	}
 
-	private void parseEffects(LibraryMaterials library, Model output) {
-		// TODO Auto-generated method stub
+	private void parseEffects(LibraryEffects library, Model output) {
+		// Parse materials and store in a map
+		Map<String,Material> matSrc = new HashMap<String, Material>();
+		List<Effect> effects = library.getEffects();
+		for (Effect effect : effects) {
+			Material mat = new Material();
+			String effectId = effect.getId();
+			ProfileCOMMON techProfile = (ProfileCOMMON)
+			(effect.getFxProfileAbstracts().get(0).getValue()); 
+			Phong phong = techProfile.getTechnique().getPhong();
+			Lambert lambert  = techProfile.getTechnique().getLambert();
+			
+			// To get color need to link material to Effects
+			if(phong!=null)
+			{
+				mat.ambientColor = colorFromCollada(phong.getAmbient());
+			    mat.specularColor = colorFromCollada(phong.getSpecular());
+			    mat.diffuseColor = colorFromCollada(phong.getDiffuse());
+			    mat.emissive = colorFromCollada(phong.getEmission());
+			    mat.shininess = (float) phong.getShininess().getFloat().getValue();
+			    mat.shininess2 = 1.0f;
+			    mat.transparency = (float) phong.getTransparency().getFloat().getValue();
+				output.addMaterial(mat);
+			}
+		}
 		
 	}
 
+	/**
+	 * Converts color array components to a Java color
+	 * @return
+	 */
+	private Color colorFromCollada(CommonColorOrTextureType colorSrc)
+	{
+		List<Double> colorComps = colorSrc.getColor().getValues();
+		Double[] colorArr = new Double[colorComps.size()];
+		colorComps.toArray(colorArr);
+		Color colColor = new Color(colorArr[0].floatValue(),
+				colorArr[1].floatValue(),
+				colorArr[2].floatValue(),
+				colorArr[3].floatValue());
+		
+		return colColor;
+	}
+	
 	private void parseMaterials(LibraryMaterials library,Model output) {
 		// TODO create a list of Materials
 		List<org.collada._2005._11.colladaschema.Material> matlist = library.getMaterials();
-		Map<String,Material> matSrc = new HashMap<String, Material>();
+		
 		for (org.collada._2005._11.colladaschema.Material material : matlist) {
-			Material mat = new Material();
-			String matId = material.getId();
-			// To get color need to link material to Effects
-			mat.ambientColor = Color.BLUE;
-		    mat.specularColor = Color.BLUE;
-		    mat.diffuseColor = Color.BLUE;
-		    mat.emissive = Color.BLUE;
-		    mat.shininess = 1.0f;
-		    mat.shininess2 = 1.0f;
-		    mat.transparency = 0.0f;
-			output.addMaterial(mat);
+			
 		}
 		
 	}
@@ -143,8 +175,17 @@ public class ColladaLoader implements iLoader {
 				TechniqueCommon tech = s.getTechniqueCommon();
 				String sourceId = s.getId();
 				//TODO: Apply parse technique to get XYZ arrays
-				Vec4[] data = this.parseFloatArray(flts,tech);
-				sourceMap.put("#"+sourceId, data);
+				Vec4[] data = null;
+				try
+				{
+					data = this.parseFloatArray(flts,tech);
+					sourceMap.put("#"+sourceId, data);
+				}
+				catch(ArrayIndexOutOfBoundsException parseEx)
+				{
+					//TODO UV geometries fail parsing, investigate
+					System.out.println(sourceId);
+				}
 			}
 			
 			//Parse vertices and bind using data sources above

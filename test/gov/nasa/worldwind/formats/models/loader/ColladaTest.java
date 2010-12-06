@@ -42,7 +42,7 @@ public class ColladaTest extends TestCase {
 		ColladaLoader loader = new ColladaLoader();
 		Model m = null;
 		try {
-			m = loader.load("testmodels/collada.dae");
+			m = loader.load("testmodels/superdome.dae");
 		} catch (ModelLoadException e) {
 			//e.printStackTrace();
 		}
