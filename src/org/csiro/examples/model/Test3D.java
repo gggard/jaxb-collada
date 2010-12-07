@@ -32,7 +32,7 @@ public class Test3D extends ApplicationTemplate {
                 
                 layer.addRenderable(
                         new Movable3DModel(
-                        "./testmodels/collada.dae",
+                        "./testmodels/superdome.dae",
                         new Position(Angle.fromDegrees(-34.9775),
                         		Angle.fromDegrees(138.5427), 20000),
                         50000));
