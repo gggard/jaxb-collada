@@ -109,19 +109,42 @@ public class ColladaLoader implements iLoader {
 			Lambert lambert  = techProfile.getTechnique().getLambert();
 			
 			// To get color need to link material to Effects
-			if(phong!=null)
-			{
-				mat.ambientColor = colorFromCollada(phong.getAmbient());
-			    mat.specularColor = colorFromCollada(phong.getSpecular());
-			    mat.diffuseColor = colorFromCollada(phong.getDiffuse());
-			    mat.emissive = colorFromCollada(phong.getEmission());
-			    mat.shininess = (float) phong.getShininess().getFloat().getValue();
-			    mat.shininess2 = 1.0f;
-			    mat.transparency = (float) phong.getTransparency().getFloat().getValue();
-				output.addMaterial(mat);
-			}
+			parsePhongMaterial(output, mat, phong);
+			
+			parseLambertMaterial(output, mat, lambert);
 		}
 		
+	}
+
+	private void parseLambertMaterial(Model output, Material mat,
+			Lambert lambert) {
+		if(lambert!=null)
+		{
+			mat.ambientColor = colorFromCollada(lambert.getAmbient());
+			mat.diffuseColor = colorFromCollada(lambert.getDiffuse());
+			mat.emissive = colorFromCollada(lambert.getEmission());
+			mat.transparency = (float)lambert.getTransparency().
+			getFloat().getValue();
+			mat.specularColor = Color.black;
+			mat.shininess = 1.0f;
+			output.addMaterial(mat);
+		}
+	}
+
+	private void parsePhongMaterial(Model output, Material mat, Phong phong) {
+		if(phong!=null)
+		{
+			mat.ambientColor = colorFromCollada(phong.getAmbient());
+		    mat.specularColor = colorFromCollada(phong.getSpecular());
+		    mat.diffuseColor = colorFromCollada(phong.getDiffuse());
+		    mat.emissive = colorFromCollada(phong.getEmission());
+		    mat.shininess = (float) phong.getShininess().
+		    getFloat().getValue();
+		    mat.shininess2 = 1.0f;
+		    mat.transparency = (float) phong.getTransparency().
+		    getFloat().getValue();
+			output.addMaterial(mat);
+		}
 	}
 
 	/**
@@ -130,15 +153,25 @@ public class ColladaLoader implements iLoader {
 	 */
 	private Color colorFromCollada(CommonColorOrTextureType colorSrc)
 	{
-		List<Double> colorComps = colorSrc.getColor().getValues();
-		Double[] colorArr = new Double[colorComps.size()];
-		colorComps.toArray(colorArr);
-		Color colColor = new Color(colorArr[0].floatValue(),
-				colorArr[1].floatValue(),
-				colorArr[2].floatValue(),
-				colorArr[3].floatValue());
-		
-		return colColor;
+		//This is a common type for Color and Texture
+		//ensure Color exists otherwise null pointers proliferate
+		CommonColorOrTextureType.Color col = colorSrc.getColor();
+		if(col!=null)
+		{
+			List<Double> colorComps = col.getValues();
+			Double[] colorArr = new Double[colorComps.size()];
+			colorComps.toArray(colorArr);
+			Color colColor = new Color(colorArr[0].floatValue(),
+					colorArr[1].floatValue(),
+					colorArr[2].floatValue(),
+					colorArr[3].floatValue());
+			
+			return colColor;
+		}
+		else
+		{
+			return Color.blue;
+		}
 	}
 	
 	private void parseMaterials(LibraryMaterials library,Model output) {
@@ -219,6 +252,20 @@ public class ColladaLoader implements iLoader {
 					targetMesh.faces = faces;
 					targetMesh.numOfFaces = faces.length;
 				}
+				else if(object instanceof Triangles)
+				{
+					Face[] faces = parseFaces((Triangles)object,sourceMap,targetMesh);
+					targetMesh.faces = faces;
+					targetMesh.numOfFaces = faces.length;
+				}
+				else if(object instanceof Lines)
+				{
+					/*
+					Face[] faces = parseLines((Lines)object,sourceMap,targetMesh);
+					targetMesh.faces = faces;
+					targetMesh.numOfFaces = faces.length;
+					*/
+				}
 			}
 			
 			//Add mesh to model passed in
@@ -280,7 +327,8 @@ public class ColladaLoader implements iLoader {
 				vertoffset = input.getOffset().intValue();
 			}
 			//TODO: Textured objects will have a semantic Texture ??
-			if(semantic.equals("TEXTURE"))
+			//http://www.collada.org/mediawiki/index.php/Using_accessors
+			if(semantic.equals("TEXCOORD"))
 			{
 				String texHash = input.getSource();
 				textures = sourceMap.get(texHash);
@@ -345,6 +393,102 @@ public class ColladaLoader implements iLoader {
 				e.printStackTrace();
 			}			
 		}
+		Face[] face_arr = new Face[faces.size()];
+		return faces.toArray(face_arr);
+	}
+	
+	private Face[] parseFaces(Triangles tris,Map<String,Vec4[]> sourceMap,
+			gov.nasa.worldwind.formats.models.geometry.Mesh targetMesh) {
+		// TODO Use lookup to generate faces
+		Vec4[] normals = null;
+		Vec4[] vertices = null;
+		Vec4[] textures = null;
+		int normoffset = -1;
+		int vertoffset = -1;
+		int texoffset = -1;
+		List inputlist = tris.getInputs();
+		int inputCount = inputlist.size();
+		for (Object object : inputlist) {
+			InputLocalOffset input = (InputLocalOffset)object;
+			String semantic = input.getSemantic();
+			if(semantic.equals("NORMAL"))
+			{
+				String normHash = input.getSource();
+				normals = sourceMap.get(normHash);
+				normoffset = input.getOffset().intValue();
+				//TODO Find a better spot to bind the normals
+				targetMesh.normals = normals;
+			}
+			if(semantic.equals("VERTEX"))
+			{
+				String vertHash = input.getSource();
+				vertices = sourceMap.get(vertHash);
+				vertoffset = input.getOffset().intValue();
+			}
+			//TODO: Textured objects will have a semantic Texture ??
+			//http://www.collada.org/mediawiki/index.php/Using_accessors
+			if(semantic.equals("TEXCOORD"))
+			{
+				String texHash = input.getSource();
+				textures = sourceMap.get(texHash);
+				texoffset = input.getOffset().intValue();
+			}
+		}
+		
+		List<BigInteger> vertRefs = tris.getP();
+		ArrayList<Face> faces = new ArrayList<Face>();
+		try{
+			// Each number set in polygon references vertex,normal and texture
+			// coordinate in a given order
+			int facePoints = vertRefs.size()/inputCount;
+			Face face = new Face(facePoints);
+			BigInteger[] indices = new BigInteger[vertRefs.size()];
+			vertRefs.toArray(indices);
+			//TODO Late binding normals is a pain
+			
+			for(int i=0;i<facePoints;i++)
+			{
+				// If vertices are defined set vertIndex
+				if(vertoffset!=-1)
+				{
+					face.vertIndex[i] = indices[(i*inputCount)
+				                            +vertoffset].intValue();
+				}
+				else
+				{
+					face.vertIndex[i] = -1;
+				}
+				
+				// If normals are defined set normIndex
+				if(normoffset!=-1)
+				{
+					face.normalIndex[i] = indices[(i*inputCount)
+				                            +normoffset].intValue();
+				}
+				else
+				{
+					face.normalIndex[i] = -1;
+				}
+				
+				// If textures are defined set coordIndex
+				if(texoffset!=-1)
+				{
+					face.coordIndex[i] = indices[(i*inputCount)
+				                            +texoffset].intValue();
+				}
+				else
+				{
+					face.coordIndex[i] = -1;
+				}
+			}
+			
+			faces.add(face);
+		}
+		catch(ClassCastException e)
+		{
+			e.printStackTrace();
+		}			
+		
 		Face[] face_arr = new Face[faces.size()];
 		return faces.toArray(face_arr);
 	}
