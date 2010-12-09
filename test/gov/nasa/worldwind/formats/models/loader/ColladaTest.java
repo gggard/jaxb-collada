@@ -42,7 +42,7 @@ public class ColladaTest extends TestCase {
 		ColladaLoader loader = new ColladaLoader();
 		Model m = null;
 		try {
-			m = loader.load("testmodels/superdome.dae");
+			m = loader.load("testmodels/collada.dae");
 		} catch (ModelLoadException e) {
 			//e.printStackTrace();
 		}
@@ -56,7 +56,25 @@ public class ColladaTest extends TestCase {
 		assertNotSame(0,mesh.numOfFaces);
 		assertNotNull(mesh.normals);
 		//Collada normals equate to number of faces
-		//assertEquals(mesh.normals.length, mesh.numOfFaces);
+		assertEquals(mesh.normals.length, mesh.numOfFaces);
+		assertNotNull(m.getMaterial(0));
+		
+		try {
+			m = loader.load("testmodels/superdome.dae");
+		} catch (ModelLoadException e) {
+			//e.printStackTrace();
+		}
+		assertNotNull(m);
+		assertNotSame(0,m.getNumberOfMeshes());
+		mesh = m.getMesh(0);
+		assertNotNull(mesh);
+		assertNotNull(mesh.vertices);
+		assertNotSame(0, mesh.numOfVerts);
+		assertNotNull(mesh.faces);
+		assertNotSame(0,mesh.numOfFaces);
+		assertNotNull(mesh.normals);
+		//Collada normals equate to number of faces
+//		assertEquals(mesh.normals.length, mesh.numOfFaces);
 		assertNotNull(m.getMaterial(0));
 	}
 

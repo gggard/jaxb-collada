@@ -123,8 +123,8 @@ public class ColladaLoader implements iLoader {
 			mat.ambientColor = colorFromCollada(lambert.getAmbient());
 			mat.diffuseColor = colorFromCollada(lambert.getDiffuse());
 			mat.emissive = colorFromCollada(lambert.getEmission());
-			mat.transparency = (float)lambert.getTransparency().
-			getFloat().getValue();
+			CommonFloatOrParamType trans = lambert.getTransparency();
+			mat.transparency = trans == null ? 0.0f : (float)trans.getFloat().getValue();
 			mat.specularColor = Color.black;
 			mat.shininess = 1.0f;
 			output.addMaterial(mat);
@@ -248,13 +248,13 @@ public class ColladaLoader implements iLoader {
 			for (Object object : polys) {
 				if(object instanceof Polygons)
 				{
-					Face[] faces = parseFaces((Polygons)object,sourceMap,targetMesh);
+					Face[] faces = parsePolygons((Polygons)object,sourceMap,targetMesh);
 					targetMesh.faces = faces;
 					targetMesh.numOfFaces = faces.length;
 				}
 				else if(object instanceof Triangles)
 				{
-					Face[] faces = parseFaces((Triangles)object,sourceMap,targetMesh);
+					Face[] faces = parseTriangles((Triangles)object,sourceMap,targetMesh);
 					targetMesh.faces = faces;
 					targetMesh.numOfFaces = faces.length;
 				}
@@ -298,7 +298,7 @@ public class ColladaLoader implements iLoader {
 		return null;
 	}
 
-	private Face[] parseFaces(Polygons polys,Map<String,Vec4[]> sourceMap,
+	private Face[] parsePolygons(Polygons polys,Map<String,Vec4[]> sourceMap,
 			gov.nasa.worldwind.formats.models.geometry.Mesh targetMesh) {
 		// TODO Use lookup to generate faces
 		Vec4[] normals = null;
@@ -397,7 +397,7 @@ public class ColladaLoader implements iLoader {
 		return faces.toArray(face_arr);
 	}
 	
-	private Face[] parseFaces(Triangles tris,Map<String,Vec4[]> sourceMap,
+	private Face[] parseTriangles(Triangles tris,Map<String,Vec4[]> sourceMap,
 			gov.nasa.worldwind.formats.models.geometry.Mesh targetMesh) {
 		// TODO Use lookup to generate faces
 		Vec4[] normals = null;
