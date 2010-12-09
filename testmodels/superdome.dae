@@ -117,9 +117,6 @@
                   <transparent>
                      <color>1 1 1 1</color>
                   </transparent>
-                  <transparency>
-                     <float>0.000000</float>
-                  </transparency>
                </lambert>
             </technique>
             <extra>
