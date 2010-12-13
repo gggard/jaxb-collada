@@ -14,6 +14,7 @@ import gov.nasa.worldwind.formats.models.ModelLoadException;
 import gov.nasa.worldwind.formats.models.geometry.Face;
 import gov.nasa.worldwind.formats.models.geometry.Material;
 import gov.nasa.worldwind.formats.models.geometry.Model;
+import gov.nasa.worldwind.formats.models.geometry.TexCoord;
 import gov.nasa.worldwind.formats.models.geometry.Vec4;
 
 import java.awt.Color;
@@ -76,7 +77,7 @@ public class ColladaLoader implements iLoader {
 			    new FileInputStream( path ) );
 		
 		//TODO: Parse Geometries and Materials from Libraries
-		List libraries = col.getLibraryAnimationsAndLibraryAnimationClipsAndLibraryCameras();
+		List<?> libraries = col.getLibraryAnimationsAndLibraryAnimationClipsAndLibraryCameras();
 		for (Object library : libraries) {
 			if(library instanceof LibraryGeometries)
 			{
@@ -90,10 +91,29 @@ public class ColladaLoader implements iLoader {
 			{
 				this.parseEffects((LibraryEffects)library,output);
 			}
+			if(library instanceof LibraryImages)
+			{
+				this.parseImages((LibraryImages)library,output);
+			}
 		}
 		
 		//TODO: Parse Scene and Add primitives
 			
+	}
+
+	/**
+	 * If textures are used this library contains relative
+	 * (or absolute) links to all the relevant images
+	 * @param library
+	 * @param output
+	 */
+	private void parseImages(LibraryImages library, Model output) {
+		List<Image> images = library.getImages();
+		for (Image image : images) {
+			System.out.println(image.getInitFrom());
+			System.out.println(image.getName());
+			System.out.println(image.getId());
+		}
 	}
 
 	private void parseEffects(LibraryEffects library, Model output) {
@@ -105,6 +125,15 @@ public class ColladaLoader implements iLoader {
 			String effectId = effect.getId();
 			ProfileCOMMON techProfile = (ProfileCOMMON)
 			(effect.getFxProfileAbstracts().get(0).getValue()); 
+			
+			//TODO Effects with Textures typically have params
+			List<Object> params = techProfile.getImagesAndNewparams();
+			for (Object param : params) {
+				parseParam(param);
+			}
+			
+			//TODO Read params and store to bind with material etc
+			
 			Phong phong = techProfile.getTechnique().getPhong();
 			Lambert lambert  = techProfile.getTechnique().getLambert();
 			
@@ -115,7 +144,43 @@ public class ColladaLoader implements iLoader {
 		}
 		
 	}
+	
+	
+	/**
+	 * Parse the given parameter for Effect
+	 * likely to be texture link or UV link
+	 * @param param
+	 */
+	private void parseParam(Object param) {
+		try
+		{
+			CommonNewparamType par = (CommonNewparamType)param;
+			FxSampler2DCommon sampler = par.getSampler2D();
+			if(sampler!=null) System.out.println(sampler.getSource());
+			FxSurfaceCommon surf = par.getSurface();
+			if(surf!=null)
+			{
+				parseInitFroms(surf.getInitFroms());
+			}
+			//System.out.println(par.getSemantic());
+		}
+		catch(ClassCastException e)
+		{
+			e.printStackTrace();
+		}
+	}
 
+	private void parseInitFroms(List<FxSurfaceInitFromCommon> initFroms) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	 * Adds parsed material described using the Lambert parameters
+	 * @param output
+	 * @param mat
+	 * @param lambert
+	 */
 	private void parseLambertMaterial(Model output, Material mat,
 			Lambert lambert) {
 		if(lambert!=null)
@@ -128,9 +193,16 @@ public class ColladaLoader implements iLoader {
 			mat.specularColor = Color.black;
 			mat.shininess = 1.0f;
 			output.addMaterial(mat);
+			//TODO Keep material id for linking to faces
 		}
 	}
 
+	/**
+	 * Adds parsed Material described using Phong parameters
+	 * @param output
+	 * @param mat
+	 * @param phong
+	 */
 	private void parsePhongMaterial(Model output, Material mat, Phong phong) {
 		if(phong!=null)
 		{
@@ -144,6 +216,7 @@ public class ColladaLoader implements iLoader {
 		    mat.transparency = (float) phong.getTransparency().
 		    getFloat().getValue();
 			output.addMaterial(mat);
+			//TODO Keep material id for linking to faces
 		}
 	}
 
@@ -172,6 +245,16 @@ public class ColladaLoader implements iLoader {
 		{
 			return Color.blue;
 		}
+	}
+	
+	private TexCoord textureFromCollada(CommonColorOrTextureType texSrc)
+	{
+		CommonColorOrTextureType.Texture tex =  texSrc.getTexture();
+		if(tex!=null)
+		{
+			System.out.println(tex.getTexcoord());
+		}
+		return null;
 	}
 	
 	private void parseMaterials(LibraryMaterials library,Model output) {
