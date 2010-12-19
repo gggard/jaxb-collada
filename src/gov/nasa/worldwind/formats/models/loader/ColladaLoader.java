@@ -107,13 +107,16 @@ public class ColladaLoader implements iLoader {
 	 * @param library
 	 * @param output
 	 */
-	private void parseImages(LibraryImages library, Model output) {
+	private Map<String,String> parseImages(LibraryImages library, Model output) {
 		List<Image> images = library.getImages();
+		Map<String,String> imageMap = new HashMap<String, String>();
 		for (Image image : images) {
-			System.out.println(image.getInitFrom());
-			System.out.println(image.getName());
-			System.out.println(image.getId());
+			String imageSrc = image.getInitFrom();
+			String imageName = image.getName();
+			String imageId = image.getId();
+			imageMap.put(imageId, imageSrc);
 		}
+		return imageMap;
 	}
 
 	private void parseEffects(LibraryEffects library, Model output) {
