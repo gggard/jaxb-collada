@@ -57,6 +57,8 @@ public class MaxLoaderTest extends TestCase {
 		assertEquals(mesh.normals.length, mesh.numOfVerts);
 		//Ensure we have a material
 		assertNotNull(m.getMaterial(0));
+		//We have a texture materials string file is not null
+		assertNotNull(m.getMaterial(0).strFile);
 	}
 
 }

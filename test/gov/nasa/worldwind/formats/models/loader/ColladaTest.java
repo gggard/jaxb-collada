@@ -76,6 +76,9 @@ public class ColladaTest extends TestCase {
 		//Collada normals equate to number of faces
 //		assertEquals(mesh.normals.length, mesh.numOfFaces);
 		assertNotNull(m.getMaterial(0));
+		//5th(4 ordinal from 0) Material has a texture
+		assertNotNull(m.getMaterial(4));
+		assertNotNull(m.getMaterial(4).strFile);
 	}
 
 }
