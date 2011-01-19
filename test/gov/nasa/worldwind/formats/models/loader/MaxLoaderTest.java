@@ -59,6 +59,8 @@ public class MaxLoaderTest extends TestCase {
 		assertNotNull(m.getMaterial(0));
 		//We have a texture materials string file is not null
 		assertNotNull(m.getMaterial(0).strFile);
+		assertTrue(m.getMaterial(0).strFile.
+				equalsIgnoreCase("POLYSHIP.JPG"));
 	}
 
 }
