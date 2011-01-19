@@ -369,7 +369,7 @@ public class WaveFrontLoader implements iLoader {
             mesh.materialID = materialID;
     }
     
-    public Material loadMaterialFile(InputStream stream) {
+    private Material loadMaterialFile(InputStream stream) {
         Material mat = null;
         int texId = 0;
         
