@@ -3,27 +3,51 @@
 	<description>
 	    Build worldwind 3D model support
 	</description>
-	
+
 	<!-- Load up World Wind Models build properties.  All properties expected by ANT are defined in build.properties. -->
 	<property file="build/build.properties"/>
-	
+
 	<target name="compile"
 		description="Compile the Model Support source">
-		        <mkdir dir="${wwmodel.classes.dir}"/>
-		        <javac destdir="${wwmodel.classes.dir}"
+		<mkdir dir="${wwmodel.classes.dir}"/>
+		<javac destdir="${wwmodel.classes.dir}"
 		               fork="true"
 		               memoryMaximumSize="512m"
 		               source="${worldwind.jdk.version}"
 		               target="${worldwind.jdk.version}">
-		            <src path="${wwmodel.src.dir}"/>
-		            <src path="${wwmodel.test.dir}"/>
-		            <classpath>
-		                <pathelement location="${worldwind.dir}/jogl.jar"/>
-		                <pathelement location="${worldwind.dir}/gluegen-rt.jar"/>
-		                <pathelement location="${java.home}/lib/plugin.jar"/>
-		                <pathelement location="${worldwind.dir}/gdal.jar"/>
-		            	<pathelement location="${worldwind.dir}/worldwind.jar"/>
-		            </classpath>
-		        </javac>
+			<src path="${wwmodel.src.dir}"/>
+			<src path="${wwmodel.test.dir}"/>
+			<classpath>
+				<pathelement location="${worldwind.dir}/jogl.jar"/>
+				<pathelement location="${worldwind.dir}/gluegen-rt.jar"/>
+				<pathelement location="${java.home}/lib/plugin.jar"/>
+				<pathelement location="${worldwind.dir}/junit-4.5.jar"/>
+				<pathelement location="${worldwind.dir}/gdal.jar"/>
+				<pathelement location="${worldwind.dir}/worldwind.jar"/>
+			</classpath>
+		</javac>
+	</target>
+
+	<target name="testloaders"
+		description="Run JUnit Tests on loaders"
+		depends="compile">
+		<mkdir dir="${wwmodel.testreports.dir}"/>
+		<junit haltonfailure="no">
+			<formatter type="plain"/>
+			<batchtest todir="${wwmodel.testreports.dir}">
+				<fileset dir="${wwmodel.classes.dir}">
+					<include name="**/loader/*Test.class"/>
+				</fileset>
+			</batchtest>
+			<classpath>
+				<pathelement location="${wwmodel.classes.dir}"/>
+				<pathelement location="${worldwind.dir}/jogl.jar"/>
+				<pathelement location="${worldwind.dir}/gluegen-rt.jar"/>
+				<pathelement location="${java.home}/lib/plugin.jar"/>
+				<pathelement location="${worldwind.dir}/junit-4.5.jar"/>
+				<pathelement location="${worldwind.dir}/gdal.jar"/>
+				<pathelement location="${worldwind.dir}/worldwind.jar"/>
+			</classpath>
+		</junit>
 	</target>
 </project>
