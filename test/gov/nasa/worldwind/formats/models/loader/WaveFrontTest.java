@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 
 import gov.nasa.worldwind.formats.models.ModelLoadException;
 import gov.nasa.worldwind.formats.models.geometry.Material;
+import gov.nasa.worldwind.formats.models.geometry.Mesh;
 import gov.nasa.worldwind.formats.models.geometry.Model;
 import junit.framework.TestCase;
 
@@ -34,6 +35,22 @@ public class WaveFrontTest extends TestCase {
 		}
 		
 		assertNotNull(model);
+		assertNotSame(0,model.getNumberOfMeshes());
+		Mesh mesh = model.getMesh(0);
+		assertNotNull(mesh);
+		assertNotNull(mesh.vertices);
+		assertNotSame(0, mesh.numOfVerts);
+		assertNotNull(mesh.faces);
+		assertNotSame(0,mesh.numOfFaces);
+		assertNotNull(mesh.normals);
+		//Max normals equate to number of faces
+		//assertEquals(mesh.normals.length, mesh.numOfFaces);
+		//Ensure we have a material
+		assertNotNull(model.getMaterial(0));
+		//We have a texture materials string file is not null
+		assertNotNull(model.getMaterial(0).strFile);
+		assertTrue(model.getMaterial(0).strFile.
+				equalsIgnoreCase("penguin.gif"));
 	}
 	
 }

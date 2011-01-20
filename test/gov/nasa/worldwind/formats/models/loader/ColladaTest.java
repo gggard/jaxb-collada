@@ -79,6 +79,7 @@ public class ColladaTest extends TestCase {
 		//5th(4 ordinal from 0) Material has a texture
 		assertNotNull(m.getMaterial(4));
 		assertNotNull(m.getMaterial(4).strFile);
+		assertEquals("../images/texture1.jpg", m.getMaterial(4).strFile);
 	}
 
 }

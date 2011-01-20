@@ -23,6 +23,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,6 +79,10 @@ public class ColladaLoader implements iLoader {
 		
 		//TODO: Parse Geometries and Materials from Libraries
 		List<?> libraries = col.getLibraryAnimationsAndLibraryAnimationClipsAndLibraryCameras();
+		
+		Map<String,String> imageMap = null;
+		Map<String,Material> materialMap = null;
+		
 		for (Object library : libraries) {
 			if(library instanceof LibraryGeometries)
 			{
@@ -89,16 +94,32 @@ public class ColladaLoader implements iLoader {
 			}
 			if(library instanceof LibraryEffects)
 			{
-				this.parseEffects((LibraryEffects)library,output);
+				materialMap = this.parseEffects((LibraryEffects)library,output);
 			}
 			if(library instanceof LibraryImages)
 			{
-				this.parseImages((LibraryImages)library,output);
+				imageMap = this.parseImages((LibraryImages)library,output);
+			}
+			if(library instanceof LibraryNodes)
+			{
+				this.parseNodes((LibraryNodes)library,output);
 			}
 		}
 		
 		//TODO: Parse Scene and Add primitives
-			
+	}
+
+	/**
+	 * Creates nodes attaching meshes to materials
+	 * @param library Collection of scenegraph nodes
+	 * @param output final model output
+	 */
+	private void parseNodes(LibraryNodes library, Model output) {
+		// TODO Auto-generated method stub
+		List<Node> nodes = library.getNodes();
+		for (Node node : nodes) {
+			System.out.println(node.getName());
+		}
 	}
 
 	/**
@@ -119,9 +140,9 @@ public class ColladaLoader implements iLoader {
 		return imageMap;
 	}
 
-	private void parseEffects(LibraryEffects library, Model output) {
+	private Map<String, Material> parseEffects(LibraryEffects library, Model output) {
 		// Parse materials and store in a map
-		Map<String,Material> matSrc = new HashMap<String, Material>();
+		Map<String,Material> materialMap = new HashMap<String, Material>();
 		List<Effect> effects = library.getEffects();
 		for (Effect effect : effects) {
 			Material mat = new Material();
@@ -132,7 +153,11 @@ public class ColladaLoader implements iLoader {
 			//TODO Effects with Textures typically have params
 			List<Object> params = techProfile.getImagesAndNewparams();
 			for (Object param : params) {
-				parseParam(param);
+				String initTex = parseParam(param);
+				if(initTex!=null)
+				{
+					mat.strFile = initTex;
+				}
 			}
 			
 			//TODO Read params and store to bind with material etc
@@ -141,11 +166,13 @@ public class ColladaLoader implements iLoader {
 			Lambert lambert  = techProfile.getTechnique().getLambert();
 			
 			// To get color need to link material to Effects
-			parsePhongMaterial(output, mat, phong);
+			parsePhongEffect(output, mat, phong);
+			parseLambertEffect(output, mat, lambert);
 			
-			parseLambertMaterial(output, mat, lambert);
+			materialMap.put(effectId, mat);
 		}
 		
+		return materialMap;
 	}
 	
 	
@@ -154,7 +181,7 @@ public class ColladaLoader implements iLoader {
 	 * likely to be texture link or UV link
 	 * @param param
 	 */
-	private void parseParam(Object param) {
+	private String parseParam(Object param) {
 		try
 		{
 			CommonNewparamType par = (CommonNewparamType)param;
@@ -163,7 +190,8 @@ public class ColladaLoader implements iLoader {
 			FxSurfaceCommon surf = par.getSurface();
 			if(surf!=null)
 			{
-				parseInitFroms(surf.getInitFroms());
+				String initTex = parseInitFroms(surf.getInitFroms()).getInitFrom();
+				return initTex;
 			}
 			//System.out.println(par.getSemantic());
 		}
@@ -171,11 +199,12 @@ public class ColladaLoader implements iLoader {
 		{
 			e.printStackTrace();
 		}
+		return null;
 	}
 
-	private void parseInitFroms(List<FxSurfaceInitFromCommon> initFroms) {
+	private Image parseInitFroms(List<FxSurfaceInitFromCommon> initFroms) {
 		// TODO Auto-generated method stub
-		
+		return (Image)(initFroms.get(0).getValue());
 	}
 
 	/**
@@ -184,7 +213,7 @@ public class ColladaLoader implements iLoader {
 	 * @param mat
 	 * @param lambert
 	 */
-	private void parseLambertMaterial(Model output, Material mat,
+	private void parseLambertEffect(Model output, Material mat,
 			Lambert lambert) {
 		if(lambert!=null)
 		{
@@ -206,7 +235,7 @@ public class ColladaLoader implements iLoader {
 	 * @param mat
 	 * @param phong
 	 */
-	private void parsePhongMaterial(Model output, Material mat, Phong phong) {
+	private void parsePhongEffect(Model output, Material mat, Phong phong) {
 		if(phong!=null)
 		{
 			mat.ambientColor = colorFromCollada(phong.getAmbient());
