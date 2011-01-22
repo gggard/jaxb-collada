@@ -6,9 +6,14 @@
 
 	<!-- Load up World Wind Models build properties.  All properties expected by ANT are defined in build.properties. -->
 	<property file="build/build.properties"/>
+	
+	<fileset dir="${worldwind.dir}" id="extlibs">
+		<include name="*.jar"/>
+    </fileset>
 
 	<target name="compile"
-		description="Compile the Model Support source">
+		description="Compile the Model Support source"
+		depends="clean">
 		<mkdir dir="${wwmodel.classes.dir}"/>
 		<javac destdir="${wwmodel.classes.dir}"
 		               fork="true"
@@ -18,12 +23,8 @@
 			<src path="${wwmodel.src.dir}"/>
 			<src path="${wwmodel.test.dir}"/>
 			<classpath>
-				<pathelement location="${worldwind.dir}/jogl.jar"/>
-				<pathelement location="${worldwind.dir}/gluegen-rt.jar"/>
+				<fileset refid="extlibs"/>
 				<pathelement location="${java.home}/lib/plugin.jar"/>
-				<pathelement location="${worldwind.dir}/junit-4.5.jar"/>
-				<pathelement location="${worldwind.dir}/gdal.jar"/>
-				<pathelement location="${worldwind.dir}/worldwind.jar"/>
 			</classpath>
 		</javac>
 	</target>
@@ -41,13 +42,15 @@
 			</batchtest>
 			<classpath>
 				<pathelement location="${wwmodel.classes.dir}"/>
-				<pathelement location="${worldwind.dir}/jogl.jar"/>
-				<pathelement location="${worldwind.dir}/gluegen-rt.jar"/>
+				<fileset refid="extlibs"/>
 				<pathelement location="${java.home}/lib/plugin.jar"/>
-				<pathelement location="${worldwind.dir}/junit-4.5.jar"/>
-				<pathelement location="${worldwind.dir}/gdal.jar"/>
-				<pathelement location="${worldwind.dir}/worldwind.jar"/>
 			</classpath>
 		</junit>
+	</target>
+	
+	<target name="clean"
+	   description="Get rid of tests and compiled classes">
+		<delete dir="${wwmodel.classes.dir}"/>
+		<delete dir="${wwmodel.testreports.dir}"/>
 	</target>
 </project>

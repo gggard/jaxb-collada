@@ -1,94 +1,139 @@
 package gov.nasa.worldwind.render;
 
-import gov.nasa.worldwind.Movable;
-import gov.nasa.worldwind.geom.Position;
+import gov.nasa.worldwind.formats.models.iModel3DRenderer;
+import gov.nasa.worldwind.formats.models.geometry.Model;
+import gov.nasa.worldwind.formats.models.loader.ArdorColladaLoader;
+import gov.nasa.worldwind.util.Logging;
 
-import org.csiro.examples.model.Adjustable;
+import javax.media.opengl.GL;
+import javax.media.opengl.GLAutoDrawable;
 
-public class ArdorModelRenderer implements Renderable, Movable, Adjustable{
+import com.ardor3d.framework.Scene;
+import com.ardor3d.framework.jogl.JoglCanvasRenderer;
+import com.ardor3d.intersection.PickResults;
+import com.ardor3d.math.Ray3;
+import com.ardor3d.renderer.Renderer;
+import com.ardor3d.renderer.TextureRendererFactory;
+import com.ardor3d.renderer.jogl.JoglRenderer;
+import com.ardor3d.renderer.jogl.JoglTextureRendererProvider;
+import com.ardor3d.scenegraph.Node;
+
+public class ArdorModelRenderer implements iModel3DRenderer, Scene{
+
+	private JoglCanvasRenderer renderer;
+	private Node node;
+	private boolean useTextures;
+	private static ArdorModelRenderer instance = new ArdorModelRenderer();
 
 	@Override
-	public void render(DrawContext arg0) {
+	public void debug(boolean value) {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public static ArdorModelRenderer getInstance()
+	{
+		return instance;
+	}
 
 	@Override
-	public Position getReferencePosition() {
+	public void render(Object context, Model model) {
+		// TODO Auto-generated method stub
+		GL gl = null;
+
+		if (context instanceof GL)
+		{
+			gl = (GL) context;
+			return;
+		}
+		else if (context instanceof GLAutoDrawable)
+		{
+			gl = ((GLAutoDrawable) context).getGL();
+			return;
+		}
+		else if (context instanceof DrawContext)
+		{
+			//Logging.logger().info("This we can use in Ardor - DrawContext");
+		}
+
+		if (gl == null)
+		{
+			return;
+		}
+
+		if (model == null)
+		{
+			return;
+		}
+		
+		renderArdorModel((DrawContext)context, model);
+	}
+	
+	private void initialize(DrawContext dc, Model model) {
+        try {
+            node = ArdorColladaLoader.loadColladaModel(model.getSource());
+            renderer = new JoglCanvasRenderer(this) {
+                JoglRenderer joglRenderer = new JoglRenderer();
+                @Override
+                public Renderer getRenderer() {
+                    return joglRenderer;
+                }
+            };
+
+            TextureRendererFactory.INSTANCE.setProvider(new JoglTextureRendererProvider());
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+	
+	private void renderArdorModel(DrawContext dc, Model model)
+	{
+        ArdorColladaLoader.initializeArdorSystem(dc);
+
+        if (node == null) {
+            initialize(dc, model);  //set the local variable node
+        }
+
+        if (node != null) {
+
+            GL gl = dc.getGL();
+
+            gl.glMatrixMode(GL.GL_MODELVIEW);
+
+            gl.glPushMatrix();
+
+            gl.glPushAttrib(
+                    GL.GL_TEXTURE_BIT |
+                    GL.GL_LIGHTING_BIT);
+
+			if (useTextures) {
+                gl.glEnable(GL.GL_TEXTURE_2D);
+                gl.glEnable(GL.GL_BLEND);
+                gl.glEnable(GL.GL_RESCALE_NORMAL);
+            } else {
+                gl.glDisable(GL.GL_TEXTURE_2D);
+                gl.glDisable(GL.GL_BLEND);
+            }
+
+            node.draw(renderer.getRenderer());
+            renderer.getRenderer().renderBuckets();
+
+            gl.glPopAttrib();
+            gl.glPopMatrix();
+        }
+	}
+
+	@Override
+	public PickResults doPick(Ray3 arg0) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void move(Position arg0) {
+	public boolean renderUnto(Renderer arg0) {
 		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void moveTo(Position arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public double getPitch() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public Position getPosition() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public double getRoll() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public double getSize() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public double getYaw() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void setPitch(double val) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setPosition(Position val) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setRoll(double val) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setSize(double val) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setYaw(double val) {
-		// TODO Auto-generated method stub
-		
+		return false;
 	}
 
 }

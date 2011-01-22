@@ -9,8 +9,6 @@ import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.geom.Quaternion;
 import gov.nasa.worldwind.geom.Vec4;
 import gov.nasa.worldwind.globes.Globe;
-import gov.nasa.worldwind.render.DrawContext;
-import gov.nasa.worldwind.render.Renderable;
 import gov.nasa.worldwind.util.Logging;
 
 import javax.media.opengl.GL;
@@ -94,6 +92,10 @@ public class Movable3DModel implements Renderable, Movable, Adjustable {
             gl.glRotated(roll, 0, 1, 0);
             gl.glScaled(localSize, localSize, localSize);
             DisplayListRenderer.getInstance().render(gl, this.getModel());
+            
+            //TODO: Make the Ardor Renderer work
+            // ArdorModelRenderer.getInstance().render(dc, this.getModel());
+            
             dc.getView().popReferenceCenter(dc);
         }
     }
