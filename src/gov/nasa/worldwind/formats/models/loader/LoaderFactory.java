@@ -40,7 +40,9 @@ public class LoaderFactory {
                 return new WaveFrontLoader();
                 
             case FILETYPE_DAE:
-            	return new ColladaLoader();
+            	return new ArdorColladaLoader();
+            	//TODO: Smoother switch between ardor and JAXB loaders
+            	//return new ColladaLoader();
                 
             default:
                 return null;

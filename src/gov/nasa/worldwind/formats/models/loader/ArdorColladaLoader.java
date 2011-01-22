@@ -10,6 +10,8 @@
 
 package gov.nasa.worldwind.formats.models.loader;
 
+import gov.nasa.worldwind.formats.models.ModelLoadException;
+import gov.nasa.worldwind.formats.models.geometry.Model;
 import gov.nasa.worldwind.render.DrawContext;
 import gov.nasa.worldwind.util.Logging;
 
@@ -32,15 +34,15 @@ import com.ardor3d.util.resource.SimpleResourceLocator;
  * Simplest example of loading a Collada model.
  */
 
-public class ArdorColladaLoader {
+public class ArdorColladaLoader implements iLoader{
     
     
     public static Node loadColladaModel(String modelFileStr) throws Exception {
     	
         final Node root = new Node( "rootNode" );
 
-        String modelDirStr = modelFileStr.substring(0, modelFileStr.lastIndexOf(File.separator));
-        String modelNameStr = modelFileStr.substring(modelFileStr.lastIndexOf(File.separator)+1);
+        String modelDirStr = new File(modelFileStr).getParent();
+        String modelNameStr = new File(modelFileStr).getName();
 
         File modelDir = new File(modelDirStr);
         modelDirStr = modelDir.getAbsolutePath();
@@ -85,4 +87,11 @@ public class ArdorColladaLoader {
             ContextManager.getCurrentContext().setCurrentCamera(cam);
             AWTImageLoader.registerLoader();
     }
+
+	@Override
+	public Model load(String path) throws ModelLoadException {
+		// TODO Auto-generated method stub
+		Model model = new Model(path);
+		return model;
+	}
 }

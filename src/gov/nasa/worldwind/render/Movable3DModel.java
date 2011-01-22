@@ -32,8 +32,17 @@ public class Movable3DModel implements Renderable, Movable, Adjustable {
     private Vec4 referenceCenterPoint;
     private Globe globe;
     private double size = 1;
+    private boolean useArdor = false;
 
-    public Movable3DModel(Model model, Position pos) {
+    public boolean isUseArdor() {
+		return useArdor;
+	}
+
+	public void setUseArdor(boolean useArdor) {
+		this.useArdor = useArdor;
+	}
+
+	public Movable3DModel(Model model, Position pos) {
         this.model = model;
         this.setPosition(pos);
         this.model.setUseLighting(false);
@@ -91,11 +100,16 @@ public class Movable3DModel implements Renderable, Movable, Adjustable {
             gl.glRotated(pitch, 1, 0, 0);
             gl.glRotated(roll, 0, 1, 0);
             gl.glScaled(localSize, localSize, localSize);
-            DisplayListRenderer.getInstance().render(gl, this.getModel());
             
-            //TODO: Make the Ardor Renderer work
-            // ArdorModelRenderer.getInstance().render(dc, this.getModel());
-            
+            if(useArdor)
+            {
+            	//TODO: Make the Ardor Renderer work
+                ArdorModelRenderer.getInstance().render(dc, this.getModel());
+            }
+            else
+            {
+            	DisplayListRenderer.getInstance().render(gl, this.getModel());
+            }
             dc.getView().popReferenceCenter(dc);
         }
     }

@@ -22,7 +22,6 @@ public class ArdorModelRenderer implements iModel3DRenderer, Scene{
 
 	private JoglCanvasRenderer renderer;
 	private Node node;
-	private boolean useTextures;
 	private static ArdorModelRenderer instance = new ArdorModelRenderer();
 
 	@Override
@@ -39,34 +38,13 @@ public class ArdorModelRenderer implements iModel3DRenderer, Scene{
 	@Override
 	public void render(Object context, Model model) {
 		// TODO Auto-generated method stub
-		GL gl = null;
-
-		if (context instanceof GL)
+		if (context instanceof DrawContext)
 		{
-			gl = (GL) context;
-			return;
+			if (model != null)
+			{
+				renderArdorModel((DrawContext)context, model);
+			}	
 		}
-		else if (context instanceof GLAutoDrawable)
-		{
-			gl = ((GLAutoDrawable) context).getGL();
-			return;
-		}
-		else if (context instanceof DrawContext)
-		{
-			//Logging.logger().info("This we can use in Ardor - DrawContext");
-		}
-
-		if (gl == null)
-		{
-			return;
-		}
-
-		if (model == null)
-		{
-			return;
-		}
-		
-		renderArdorModel((DrawContext)context, model);
 	}
 	
 	private void initialize(DrawContext dc, Model model) {
@@ -107,7 +85,7 @@ public class ArdorModelRenderer implements iModel3DRenderer, Scene{
                     GL.GL_TEXTURE_BIT |
                     GL.GL_LIGHTING_BIT);
 
-			if (useTextures) {
+			if (model.isUsingTexture()) {
                 gl.glEnable(GL.GL_TEXTURE_2D);
                 gl.glEnable(GL.GL_BLEND);
                 gl.glEnable(GL.GL_RESCALE_NORMAL);
