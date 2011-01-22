@@ -31,10 +31,10 @@ public class Test3D extends ApplicationTemplate {
                 */
                 
                 Movable3DModel superdome = new Movable3DModel(
-                        "./testmodels/superdome.dae",
-                        new Position(Angle.fromDegrees(-34.9775),
-                        		Angle.fromDegrees(138.5427), 1000),
-                        500);
+                        "./testmodels/models/model.dae",
+                        new Position(Angle.fromDegrees(-34.940679766700),
+                        		Angle.fromDegrees(138.623116628920), 70),
+                        1.0);
                 superdome.setUseArdor(true);
                 layer.addRenderable(superdome);
                 
