@@ -22,7 +22,21 @@ public class ArdorColladaTest {
 	public void testLoadColladaModel() {
 		Node colladaNode = null;
 		try {
-			colladaNode = ArdorColladaLoader.loadColladaModel("testmodels\\superdome.dae");
+			colladaNode = ArdorColladaLoader.loadColladaModel("testmodels/superdome.dae");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		assertNotNull(colladaNode);
+		try {
+			colladaNode = ArdorColladaLoader.loadColladaModel("testmodels/models/model.dae");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		assertNotNull(colladaNode);
+		try {
+			colladaNode = ArdorColladaLoader.loadColladaModel("testmodels/models/model_png.dae");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
