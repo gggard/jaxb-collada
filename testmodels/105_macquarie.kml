@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2">
+
+  <Folder>
+    <name>105 macquarie</name>
+    <description>Created with
+      <a href="http://sketchup.google.com"> Google SketchUp</a>
+    </description>
+    <visibility>1</visibility>
+    <LookAt>
+      <heading>317.0688844287</heading>
+      <tilt>71.72759127503</tilt>
+      <latitude>-42.88316113442</latitude>
+      <longitude>147.3297116812</longitude>
+      <range>3.102745992447</range>
+      <altitude>4.382166216003</altitude>
+    </LookAt>
+    <Folder>
+      <name>Tour</name>
+      <Placemark>
+        <name>IMG_4442</name>
+        <visibility>1</visibility>
+        <LookAt>
+          <heading>304.0451178207</heading>
+          <tilt>86.30588558223</tilt>
+          <latitude>-42.88304216496</latitude>
+          <longitude>147.3296000027</longitude>
+          <range>18.06776256683</range>
+          <altitude>1.088852813053</altitude>
+        </LookAt>
+      </Placemark>
+      <Placemark>
+        <name>front view</name>
+        <visibility>1</visibility>
+        <LookAt>
+          <heading>348.2149896849</heading>
+          <tilt>89.52135069971</tilt>
+          <latitude>-42.88311138398</latitude>
+          <longitude>147.3296013422</longitude>
+          <range>24.29903606618</range>
+          <altitude>3.68128304436</altitude>
+        </LookAt>
+      </Placemark>
+    </Folder>
+    <Placemark>
+      <name>Model</name>
+      <description></description>
+      <Style id="default"/>
+      <Model>
+        <altitudeMode>relativeToGround</altitudeMode>
+        <Location>
+          <latitude>-42.88306855273</latitude>
+          <longitude>147.3295738186</longitude>
+          <altitude>0</altitude>
+        </Location>
+        <Orientation>
+          <heading>359.7757573618</heading>
+          <tilt>0</tilt>
+          <roll>0</roll>
+        </Orientation>
+        <Scale>
+          <x>1</x>
+          <y>1</y>
+          <z>1</z>
+        </Scale>
+        <Link>
+          <href>models/untitled.dae</href>
+        </Link>
+      </Model>
+    </Placemark>
+  </Folder>
+
+</kml>
