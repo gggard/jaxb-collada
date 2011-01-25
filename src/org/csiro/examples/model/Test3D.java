@@ -29,7 +29,7 @@ public class Test3D extends ApplicationTemplate {
                             300000));
                 }
                 */
-                
+                /*
                 Movable3DModel superdome = new Movable3DModel(
                         "./testmodels/models/model.dae",
                         new Position(Angle.fromDegrees(-34.940679766700),
@@ -37,6 +37,14 @@ public class Test3D extends ApplicationTemplate {
                         1.0);
                 superdome.setUseArdor(true);
                 layer.addRenderable(superdome);
+                */
+                Movable3DModel macquarie = new Movable3DModel(
+                        "./testmodels/models/untitled.dae",
+                        new Position(Angle.fromDegrees(-42.88306855273),
+                        		Angle.fromDegrees(147.3295738186), 25),
+                        0.1);
+                macquarie.setUseArdor(true);
+                layer.addRenderable(macquarie);
                 
                 /*
                 layer.addRenderable(
