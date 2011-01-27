@@ -29,6 +29,7 @@ import javax.media.opengl.GLAutoDrawable;
 import com.sun.opengl.util.texture.Texture;
 import com.sun.opengl.util.texture.TextureCoords;
 import com.sun.opengl.util.texture.TextureIO;
+import java.util.ArrayList;
 
 /**
  * 
@@ -439,9 +440,31 @@ public class DisplayListRenderer implements iModel3DRenderer
 				coords = t.getImageTexCoords();
 			}
 
-			for (int j = 0; j < tempObj.numOfFaces; j++)
-			{
+                        //sort triangles and polygons of model into separate lists to minimize glBegin/glEnd calls
+                        ArrayList<Integer> triangleIndeces = new ArrayList<Integer>();
+                        ArrayList<Integer> polygonIndeces = new ArrayList<Integer>();
+                        for (int j=0; j<tempObj.numOfFaces; j++)
+                        {
+                            if (tempObj.faces[j].vertIndex.length == 3)
+                                triangleIndeces.add(j);
+                            else if (tempObj.faces[j].vertIndex.length > 3)
+                                polygonIndeces.add(j);
+                        }
 
+                        //apply first material and save its ID, so it is applied only when changed
+                        int currentMaterialID = tempObj.faces[0].materialID;
+                        float[] rgba = new float[4];
+                        Material firstMaterial = model.getMaterial(currentMaterialID);
+                        gl.glMaterialfv(GL.GL_FRONT, GL.GL_DIFFUSE, firstMaterial.diffuseColor.getRGBComponents(rgba), 0);
+                        gl.glMaterialfv(GL.GL_FRONT, GL.GL_AMBIENT, firstMaterial.ambientColor.getRGBComponents(rgba), 0);
+                        gl.glMaterialfv(GL.GL_FRONT, GL.GL_SPECULAR, firstMaterial.specularColor.getRGBComponents(rgba), 0);
+                        gl.glMaterialf(GL.GL_FRONT, GL.GL_SHININESS, firstMaterial.shininess);
+                        gl.glMaterialfv(GL.GL_FRONT, GL.GL_EMISSION, firstMaterial.emissive.getRGBComponents(rgba), 0);
+
+                        //draw triangles
+                        gl.glBegin(GL.GL_TRIANGLES);
+                        for (int j : triangleIndeces)
+                        {
 				// If the object has a texture, then do nothing till later...else
 				// apply the material property to it.
 				if (tempObj.hasTexture && isFullRender)
@@ -454,9 +477,90 @@ public class DisplayListRenderer implements iModel3DRenderer
 				}
 				else
 				{
-					if (tempObj.faces[j].materialID < model.getNumberOfMaterials())
+                                        //apply material only when different from current
+					if (tempObj.faces[j].materialID != currentMaterialID && tempObj.faces[j].materialID < model.getNumberOfMaterials())
 					{
-						float[] rgba = new float[4];
+                                                currentMaterialID = tempObj.faces[j].materialID;
+
+						Material material = model.getMaterial(tempObj.faces[j].materialID);
+						gl.glMaterialfv(GL.GL_FRONT, GL.GL_DIFFUSE, material.diffuseColor.getRGBComponents(rgba), 0);
+						gl.glMaterialfv(GL.GL_FRONT, GL.GL_AMBIENT, material.ambientColor.getRGBComponents(rgba), 0);
+						gl.glMaterialfv(GL.GL_FRONT, GL.GL_SPECULAR, material.specularColor.getRGBComponents(rgba), 0);
+						gl.glMaterialf(GL.GL_FRONT, GL.GL_SHININESS, material.shininess);
+						gl.glMaterialfv(GL.GL_FRONT, GL.GL_EMISSION, material.emissive.getRGBComponents(rgba), 0);
+					}
+				}
+
+				int indexType = 0;
+				int vertexIndex = 0;
+				int normalIndex = 0;
+				int textureIndex = 0;
+				// TODO: the number of vertices for a face is not always 3
+				for (int whichVertex = 0; whichVertex < tempObj.faces[j].vertIndex.length; whichVertex++)
+				{
+					vertexIndex = tempObj.faces[j].vertIndex[whichVertex];
+
+					try
+					{
+						normalIndex = tempObj.faces[j].normalIndex[whichVertex];
+
+						indexType = 0;
+						gl.glNormal3f(tempObj.normals[normalIndex].x, tempObj.normals[normalIndex].y, tempObj.normals[normalIndex].z);
+
+						if (tempObj.hasTexture)
+						{
+							if (tempObj.texCoords != null)
+							{
+								textureIndex = tempObj.faces[j].coordIndex[whichVertex];
+								indexType = 1;
+								gl.glTexCoord2f(tempObj.texCoords[textureIndex].u, tempObj.texCoords[textureIndex].v);
+							}
+						}
+						indexType = 2;
+						gl.glVertex3f(tempObj.vertices[vertexIndex].x, tempObj.vertices[vertexIndex].y, tempObj.vertices[vertexIndex].z);
+					}
+					catch (Exception e)
+					{
+						e.printStackTrace();
+						switch (indexType)
+						{
+							case 0:
+								log.warning("Normal index " + normalIndex + " is out of bounds");
+								break;
+
+							case 1:
+								log.warning("Texture index " + textureIndex + " is out of bounds");
+								break;
+
+							case 2:
+								log.warning("Vertex index " + vertexIndex + " is out of bounds");
+								break;
+						}
+					}
+				}
+				
+			}
+                        gl.glEnd();
+
+                        //draw polygons
+                        for (int j : polygonIndeces)
+                        {
+				// If the object has a texture, then do nothing till later...else
+				// apply the material property to it.
+				if (tempObj.hasTexture && isFullRender)
+				{
+					// nothing
+					// Has no texture but has a material instead and this material is
+					// the FACES material, and not the OBJECTS material ID as being used
+					// incorrectly below...by specification, the materialID is associated
+					// with a FACE and not an OBJECT
+				}
+				else
+				{
+                                        //apply material only when different from current
+					if (tempObj.faces[j].materialID != currentMaterialID && tempObj.faces[j].materialID < model.getNumberOfMaterials())
+					{
+                                                currentMaterialID = tempObj.faces[j].materialID;
 
 						Material material = model.getMaterial(tempObj.faces[j].materialID);
 						gl.glMaterialfv(GL.GL_FRONT, GL.GL_DIFFUSE, material.diffuseColor.getRGBComponents(rgba), 0);
@@ -515,7 +619,7 @@ public class DisplayListRenderer implements iModel3DRenderer
 						}
 					}
 				}
-				gl.glEnd();
+                                gl.glEnd();
 			}
 
 			if (tempObj.hasTexture && isFullRender)
