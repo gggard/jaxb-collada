@@ -222,7 +222,7 @@ public class ModelTest {
                 //model = ModelFactory.createModel("C:\\models\\apollo.3ds");
                 
                 // Call the factory for a model from a jar file
-                model = ModelFactory.createModel("./testmodels/superdome.dae");
+                model = ModelFactory.createModel("./testmodels/penguin.obj");
                 //model = ModelFactory.createModel("net/java/joglutils/model/examples/models/obj/penguin.obj");
                 
                 // When loading the model, adjust the center to the boundary center
