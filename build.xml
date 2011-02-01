@@ -6,10 +6,10 @@
 
 	<!-- Load up World Wind Models build properties.  All properties expected by ANT are defined in build.properties. -->
 	<property file="build/build.properties"/>
-	
+
 	<fileset dir="${worldwind.dir}" id="extlibs">
 		<include name="*.jar"/>
-    </fileset>
+	</fileset>
 
 	<target name="compile"
 		description="Compile the Model Support source"
@@ -47,10 +47,29 @@
 			</classpath>
 		</junit>
 	</target>
-	
+
 	<target name="clean"
 	   description="Get rid of tests and compiled classes">
 		<delete dir="${wwmodel.classes.dir}"/>
 		<delete dir="${wwmodel.testreports.dir}"/>
+	</target>
+
+	<!-- Builds the World Wind library Jar file. -->
+	<target name="wwmodel.jar" depends="compile"
+	            description="Build the World Wind Full Screen Jar">
+		<jar jarfile="${wwmodel.lib.dir}/${wwmodel.jarfile}">
+			<manifest>
+				<attribute name="Class-Path" value="jogl.jar gluegen-rt.jar
+					gdal.jar ardor3d-collada-0.7.jar ardor3d-core-0.7.jar
+					ardor3d-jogl-0.7.jar ardor3d-awt-0.7.jar
+					jaxen.jar jdom.jar saxpath.jar ardor3d-animation-0.7.jar
+					guava-r07.jar worldwind.jar"/>
+				<attribute name="Main-Class" value="${fullscreen.classname}"/>
+			</manifest>
+			<fileset dir="${wwmodel.classes.dir}">
+				<exclude name="**/loader/*Test.class"/>
+				<type type="file"/>
+			</fileset>
+		</jar>
 	</target>
 </project>
