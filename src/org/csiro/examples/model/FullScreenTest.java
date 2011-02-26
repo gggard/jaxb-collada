@@ -15,7 +15,7 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class FullScreenTest extends ApplicationTemplate {
+public class FullScreenTest{
 
 	/**
 	 * The animated view
