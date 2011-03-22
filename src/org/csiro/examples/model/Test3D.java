@@ -56,6 +56,13 @@ public class Test3D extends ApplicationTemplate {
                 
                 layer.addRenderable(model);
                 
+                Ardor3DModel airap = new Ardor3DModel(
+                        "./testmodels/models/model.dae",
+                        new Position(Angle.fromDegrees(-34.940679766700),
+                        		Angle.fromDegrees(138.623116628920), 70));
+                
+                layer.addRenderable(airap);
+                
                 /*
                 layer.addRenderable(
                         new Movable3DModel(
