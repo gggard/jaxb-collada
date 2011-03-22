@@ -50,7 +50,7 @@ public class Test3D extends ApplicationTemplate {
                 */
                 
                 Ardor3DModel model = new Ardor3DModel(
-                		"./testmodels/models/untitled.dae",
+                		"./testmodels/drykovanov/models/untitled.dae",
                         new Position(Angle.fromDegrees(-42.88306855273),
                         		Angle.fromDegrees(147.3295738186), 25));
                 
