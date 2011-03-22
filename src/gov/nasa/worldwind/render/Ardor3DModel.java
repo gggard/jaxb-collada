@@ -1,5 +1,6 @@
 package gov.nasa.worldwind.render;
 
+import gov.nasa.worldwind.Movable;
 import gov.nasa.worldwind.WorldWind;
 import gov.nasa.worldwind.formats.models.ModelFactory;
 import gov.nasa.worldwind.formats.models.geometry.Model;
@@ -18,6 +19,7 @@ import javax.media.opengl.GL;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.csiro.examples.model.Adjustable;
 
 import com.ardor3d.framework.Scene;
 import com.ardor3d.framework.jogl.JoglCanvasRenderer;
@@ -36,7 +38,7 @@ import com.ardor3d.renderer.state.record.TextureUnitRecord;
 import com.ardor3d.scenegraph.Node;
 
 public class Ardor3DModel 
-	implements Renderable, Scene
+	implements Renderable, Scene, Adjustable
 {
 	private static final Log LOG = LogFactory.getLog(Ardor3DModel.class);
 	

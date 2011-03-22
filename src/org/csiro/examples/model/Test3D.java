@@ -4,6 +4,7 @@ import gov.nasa.worldwind.examples.ApplicationTemplate;
 import gov.nasa.worldwind.geom.Angle;
 import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.layers.RenderableLayer;
+import gov.nasa.worldwind.render.Ardor3DModel;
 import gov.nasa.worldwind.render.Movable3DModel;
 
 import java.util.Random;
@@ -38,6 +39,7 @@ public class Test3D extends ApplicationTemplate {
                 superdome.setUseArdor(true);
                 layer.addRenderable(superdome);
                 */
+                /*
                 Movable3DModel macquarie = new Movable3DModel(
                         "./testmodels/models/untitled.dae",
                         new Position(Angle.fromDegrees(-42.88306855273),
@@ -45,6 +47,14 @@ public class Test3D extends ApplicationTemplate {
                         0.1);
                 macquarie.setUseArdor(true);
                 layer.addRenderable(macquarie);
+                */
+                
+                Ardor3DModel model = new Ardor3DModel(
+                		"./testmodels/models/untitled.dae",
+                        new Position(Angle.fromDegrees(-42.88306855273),
+                        		Angle.fromDegrees(147.3295738186), 25));
+                
+                layer.addRenderable(model);
                 
                 /*
                 layer.addRenderable(
