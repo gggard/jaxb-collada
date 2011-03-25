@@ -65,12 +65,12 @@ public class FullScreenTest{
 		}
 		double elevation = view.getGlobe().getElevation(pos.getLatitude(),
 				pos.getLongitude());
-		FlyToFlyViewAnimator animator = FlyToFlyViewAnimator
-				.createFlyToFlyViewAnimator(view, view.getEyePosition(),
+		FlyToFlyViewAnimator animator = FlyToFlyViewAnimator.
+				createFlyToFlyViewAnimator(view, view.getEyePosition(),
 						new Position(pos.latitude, pos.longitude, elevation),
 						view.getHeading(), view.getHeading(), view.getPitch(),
 						view.getPitch(), view.getEyePosition().getElevation(),
-						view.getEyePosition().getElevation(), 10000, true);
+						view.getEyePosition().getElevation(), 10000, 0);
 		view.addAnimator(animator);
 		animator.start();
 		view.firePropertyChange(AVKey.VIEW, null, view);
