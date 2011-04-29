@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="lib" path="extlib/ardor3d-animation-0.7.jar"/>
+	<classpathentry kind="lib" path="extlib/ardor3d-awt-0.7.jar"/>
+	<classpathentry kind="lib" path="extlib/ardor3d-collada-0.7.jar"/>
+	<classpathentry kind="lib" path="extlib/ardor3d-core-0.7.jar"/>
+	<classpathentry kind="lib" path="extlib/ardor3d-jogl-0.7.jar"/>
+	<classpathentry kind="lib" path="extlib/gdal.jar"/>
+	<classpathentry kind="lib" path="extlib/gluegen-rt.jar"/>
+	<classpathentry kind="lib" path="extlib/guava-r07.jar"/>
+	<classpathentry kind="lib" path="extlib/jaxen.jar"/>
+	<classpathentry kind="lib" path="extlib/jdom.jar"/>
+	<classpathentry kind="lib" path="extlib/jogl.jar"/>
+	<classpathentry kind="lib" path="extlib/junit-4.5.jar"/>
+	<classpathentry kind="lib" path="extlib/saxpath.jar"/>
+	<classpathentry kind="lib" path="extlib/worldwind.jar"/>
+	<classpathentry kind="lib" path="extlib/commons-logging-api-1.1.1.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="classes"/>
+</classpath>

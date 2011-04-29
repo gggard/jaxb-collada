@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<kml xmlns='http://earth.google.com/kml/2.1'>
+<Folder>
+    <name>model</name>
+    <description><![CDATA[Created with <a href="http://sketchup.google.com/">Google SketchUp 7.0.1</a>]]></description>
+    <DocumentSource>SketchUp</DocumentSource>
+<visibility>1</visibility>
+<LookAt>
+<heading>135.243</heading>
+<tilt>68.0811</tilt>
+<latitude>-34.94070095430614</latitude>
+<longitude>138.6229617267033</longitude>
+<range>233.379795180196</range>
+<altitude>106.2600054149361</altitude>
+</LookAt>
+<Folder>
+<name>Tour</name>
+<Placemark>
+<name><![CDATA[8-5-05017]]></name>
+<visibility>1</visibility>
+<LookAt>
+<heading>25.7169</heading>
+<tilt>79.8332</tilt>
+<latitude>-34.94171840265827</latitude>
+<longitude>138.6224810833994</longitude>
+<range>15.68061672327325</range>
+<altitude>2.125107646093614</altitude>
+</LookAt>
+</Placemark>
+<Placemark>
+<name><![CDATA[8-5-05020]]></name>
+<visibility>1</visibility>
+<LookAt>
+<heading>148.399</heading>
+<tilt>78.9556</tilt>
+<latitude>-34.93992445615257</latitude>
+<longitude>138.6224326273695</longitude>
+<range>12.52225890614845</range>
+<altitude>0.7814322996845889</altitude>
+</LookAt>
+</Placemark>
+<Placemark>
+<name><![CDATA[8-5-05021]]></name>
+<visibility>1</visibility>
+<LookAt>
+<heading>224.298</heading>
+<tilt>74.071</tilt>
+<latitude>-34.94015463841829</latitude>
+<longitude>138.6241388774552</longitude>
+<range>12.65834040525799</range>
+<altitude>0.01158832437580076</altitude>
+</LookAt>
+</Placemark>
+</Folder>
+  <Placemark>
+    <name>Model</name>
+    <description><![CDATA[]]></description>
+    <Style id='default'>
+    </Style>
+    <Model>
+        <altitudeMode>relativeToGround</altitudeMode>
+        <Location>
+            <longitude>138.623116628920</longitude>
+            <latitude>-34.940679766700</latitude>
+            <altitude>0.000000000000</altitude>
+        </Location>
+        <Orientation>
+            <heading>-0.000000000000</heading>
+            <tilt>0</tilt>
+            <roll>0</roll>
+        </Orientation>
+        <Scale>
+            <x>1.0</x>
+            <y>1.0</y>
+            <z>1.0</z>
+        </Scale>
+        <Link>
+            <href>models/model.dae</href>
+        </Link>
+    </Model>
+  </Placemark></Folder>
+</kml>
