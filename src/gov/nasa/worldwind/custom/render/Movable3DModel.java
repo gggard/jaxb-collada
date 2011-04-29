@@ -1,4 +1,4 @@
-package gov.nasa.worldwind.render;
+package gov.nasa.worldwind.custom.render;
 
 import gov.nasa.worldwind.Movable;
 import gov.nasa.worldwind.formats.models.ModelFactory;
@@ -9,6 +9,8 @@ import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.geom.Quaternion;
 import gov.nasa.worldwind.geom.Vec4;
 import gov.nasa.worldwind.globes.Globe;
+import gov.nasa.worldwind.render.DrawContext;
+import gov.nasa.worldwind.render.Renderable;
 import gov.nasa.worldwind.util.Logging;
 
 import javax.media.opengl.GL;

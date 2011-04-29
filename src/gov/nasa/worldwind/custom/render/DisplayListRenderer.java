@@ -6,7 +6,7 @@
  * R. Wathelet added line 123
  *          gl.glDisable(GL.GL_TEXTURE_2D);
  */
-package gov.nasa.worldwind.render;
+package gov.nasa.worldwind.custom.render;
 
 import gov.nasa.worldwind.formats.models.ResourceRetriever;
 import gov.nasa.worldwind.formats.models.iModel3DRenderer;

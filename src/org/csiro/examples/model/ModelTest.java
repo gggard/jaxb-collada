@@ -38,11 +38,11 @@
 
 package org.csiro.examples.model;
 
+import gov.nasa.worldwind.custom.render.DisplayListRenderer;
 import gov.nasa.worldwind.formats.models.ModelFactory;
 import gov.nasa.worldwind.formats.models.ModelLoadException;
 import gov.nasa.worldwind.formats.models.iModel3DRenderer;
 import gov.nasa.worldwind.formats.models.geometry.Model;
-import gov.nasa.worldwind.render.DisplayListRenderer;
 
 import java.awt.Frame;
 import java.awt.Point;

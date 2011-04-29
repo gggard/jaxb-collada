@@ -1,10 +1,10 @@
-package gov.nasa.worldwind.render;
+package gov.nasa.worldwind.custom.render;
 
-import gov.nasa.worldwind.Movable;
 import gov.nasa.worldwind.WorldWind;
 import gov.nasa.worldwind.formats.models.ModelFactory;
 import gov.nasa.worldwind.formats.models.geometry.Model;
 import gov.nasa.worldwind.formats.models.loader.ArdorColladaLoader;
+import gov.nasa.worldwind.formats.models.loader.SimpleNamespaceContext;
 import gov.nasa.worldwind.geom.Angle;
 import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.geom.Vec4;
@@ -13,13 +13,20 @@ import gov.nasa.worldwind.render.DrawContext;
 import gov.nasa.worldwind.render.Renderable;
 import gov.nasa.worldwind.util.Logging;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.media.opengl.GL;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.csiro.examples.model.Adjustable;
+import org.xml.sax.InputSource;
 
 import com.ardor3d.framework.Scene;
 import com.ardor3d.framework.jogl.JoglCanvasRenderer;
@@ -43,7 +50,7 @@ public class Ardor3DModel
 	private static final Log LOG = LogFactory.getLog(Ardor3DModel.class);
 	
 	private Position position;
-    private Model model;
+    protected Model model;
     private double yaw = 0.0;
     private double roll = 0.0;
     private double pitch = 0.0;
@@ -52,12 +59,21 @@ public class Ardor3DModel
     private Globe globe;
     private double size = 1;
     
-    private final AtomicReference<Node> nodeRef = new AtomicReference<Node>();
+	private double scalex = 1.0;
+	private double scaley = 1.0;
+	private double scalez = 1.0;
+    
+    protected final AtomicReference<Node> nodeRef = new AtomicReference<Node>();
     private JoglCanvasRenderer renderer;
     
     private boolean visible = true;
+    
+	private double unitScale = 1.0;
+
+	private String path;
 
     public Ardor3DModel(String path, Position pos) {
+    	this.path = path;
         try {
             this.model = ModelFactory.createModel(path);
         } catch (Exception e) {
@@ -94,22 +110,54 @@ public class Ardor3DModel
         }
 	}
 	
+	private void parseUnitScale() {
+		XPathFactory xpFactory = XPathFactory.newInstance();
+		XPath xpath = xpFactory.newXPath();
+
+		SimpleNamespaceContext nsc = new SimpleNamespaceContext();
+
+		xpath.setNamespaceContext(nsc);
+
+		InputSource source;
+		try {
+			System.out.println("3D model file : " + path);
+			source = new InputSource(new FileReader(path));
+
+			String result = (String) xpath.evaluate(
+					"//col:asset/col:unit/@meter", source,
+					XPathConstants.STRING);
+			if (result != null && result.length()>0) {
+				System.out.println("3D model unitScale : " + result);
+				unitScale = Double.parseDouble(result);
+			}
+
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (XPathExpressionException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
     protected void draw(DrawContext dc) {
         GL gl = dc.getGL();
         this.globe = dc.getGlobe();
         this.referenceCenterPoint = this.computeReferenceCenter(dc);
         Vec4 loc = referenceCenterPoint;
         	//dc.getGlobe().computePointFromPosition(this.getPosition());
-        double localSize = this.computeSize(dc, loc);
+        double localSize = this.computeSize(dc, loc) * unitScale;
         
         if (dc.getView().getFrustumInModelCoordinates().contains(loc)) {
             dc.getView().pushReferenceCenter(dc, loc);
             gl.glRotated(position.getLongitude().degrees, 0, 1, 0);
             gl.glRotated(-position.getLatitude().degrees, 1, 0, 0);
-            gl.glRotated(yaw, 0, 0, 1);
-            gl.glRotated(pitch, 1, 0, 0);
-            gl.glRotated(roll, 0, 1, 0);
-            gl.glScaled(localSize, localSize, localSize);
+    		gl.glRotated(pitch, 1, 0, 0);
+    		gl.glRotated(roll, 0, 1, 0);
+    		gl.glRotated(-yaw, 0, 0, 1);
+    		gl.glScaled(localSize*scalex, localSize*scaley, localSize*scalez);
             
             drawArdor(dc);
             dc.getView().popReferenceCenter(dc);
@@ -175,6 +223,15 @@ public class Ardor3DModel
         }
 	}
     
+    protected void loadModel() {
+    	try {
+			Node node = ArdorColladaLoader.loadColladaModel(model.getSource());
+			nodeRef.set(node);
+		} catch (Exception e) {
+			LOG.error("Failed to load model", e);
+		}
+    }
+    
     private class LoadModelTask 
     	implements Runnable {
     	
@@ -186,12 +243,7 @@ public class Ardor3DModel
     	
     	@Override
     	public void run() {
-    		try {
-    			Node node = ArdorColladaLoader.loadColladaModel(model.getSource());
-    			nodeRef.set(node);
-    		} catch (Exception e) {
-    			LOG.error("Failed to load model", e);
-    		}
+    		loadModel();
     	}    	
     }
     	
@@ -361,4 +413,27 @@ public class Ardor3DModel
 		return null;
 	}
 
+	public double getScalex() {
+		return scalex;
+	}
+
+	public void setScalex(double scalex) {
+		this.scalex = scalex;
+	}
+
+	public double getScaley() {
+		return scaley;
+	}
+
+	public void setScaley(double scaley) {
+		this.scaley = scaley;
+	}
+
+	public double getScalez() {
+		return scalez;
+	}
+
+	public void setScalez(double scalez) {
+		this.scalez = scalez;
+	}
 }

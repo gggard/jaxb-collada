@@ -1,11 +1,11 @@
 package org.csiro.examples.model;
 
+import gov.nasa.worldwind.custom.render.Ardor3DModel;
+import gov.nasa.worldwind.custom.render.Movable3DModel;
 import gov.nasa.worldwind.examples.ApplicationTemplate;
 import gov.nasa.worldwind.geom.Angle;
 import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.layers.RenderableLayer;
-import gov.nasa.worldwind.render.Ardor3DModel;
-import gov.nasa.worldwind.render.Movable3DModel;
 
 import java.util.Random;
 
