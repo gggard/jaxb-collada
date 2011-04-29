@@ -8,11 +8,19 @@
 	<classpathentry kind="lib" path="extlib/ardor3d-core-0.7.jar"/>
 	<classpathentry kind="lib" path="extlib/ardor3d-jogl-0.7.jar"/>
 	<classpathentry kind="lib" path="extlib/gdal.jar"/>
-	<classpathentry kind="lib" path="extlib/gluegen-rt.jar"/>
+	<classpathentry kind="lib" path="extlib/gluegen-rt.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="worldwind-0.6.790.15277"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="extlib/guava-r07.jar"/>
 	<classpathentry kind="lib" path="extlib/jaxen.jar"/>
 	<classpathentry kind="lib" path="extlib/jdom.jar"/>
-	<classpathentry kind="lib" path="extlib/jogl.jar"/>
+	<classpathentry kind="lib" path="extlib/jogl.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="worldwind-0.6.790.15277"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="extlib/junit-4.5.jar"/>
 	<classpathentry kind="lib" path="extlib/saxpath.jar"/>
 	<classpathentry kind="lib" path="extlib/worldwind.jar"/>
