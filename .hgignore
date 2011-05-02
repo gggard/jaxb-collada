@@ -3,3 +3,5 @@ syntax: regexp
 ^testreports$
 syntax: regexp
 ^classes$
+syntax: regexp
+^extlib/wwmodel\.jar$
