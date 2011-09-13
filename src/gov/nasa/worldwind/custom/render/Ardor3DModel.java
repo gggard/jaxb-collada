@@ -327,8 +327,9 @@ public class Ardor3DModel
     }
     
     protected Vec4 computeReferenceCenter(DrawContext dc) {
-        return this.computeTerrainPoint(dc,
-                this.getPosition().getLatitude(), this.getPosition().getLongitude());
+    	return dc.getGlobe().computePointFromPosition(position);
+        //return this.computeTerrainPoint(dc,
+        //        this.getPosition().getLatitude(), this.getPosition().getLongitude());
     }
 
     protected final Vec4 computeTerrainPoint(DrawContext dc, Angle lat, Angle lon) {

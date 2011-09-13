@@ -21,7 +21,7 @@ public class Test3D extends ApplicationTemplate {
 
 				layer
 						.addRenderable(new Movable3DModel(
-								"./3dmodels/spaceship.3ds",
+								"./testmodels/spaceship.3ds",
 								new Position(Angle
 										.fromDegrees(-34.940679766700), Angle
 										.fromDegrees(138.623116628920), 200000),
@@ -56,6 +56,7 @@ public class Test3D extends ApplicationTemplate {
 
 				layer.addRenderable(airap);
 
+				
 				layer.addRenderable(new Movable3DModel(
 						"./testmodels/sea_horse/sea_horse.obj", new Position(
 								Angle.fromDegrees(-42.88306855273), Angle
@@ -67,7 +68,7 @@ public class Test3D extends ApplicationTemplate {
 								Angle.fromDegrees(-42.98306855273), Angle
 										.fromDegrees(147.3295738186), 2000),
 						3000));
-
+				
 				this.getWwd().addSelectListener(
 						new GenericDraggerAdjuster(this.getWwd()));
 				insertBeforeCompass(this.getWwd(), layer);
