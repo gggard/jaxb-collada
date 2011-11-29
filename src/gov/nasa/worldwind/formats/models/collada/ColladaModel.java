@@ -51,9 +51,9 @@ public class ColladaModel
 	
 	private Position position;
     protected Model model;
-    private double yaw = 0.0;
-    private double roll = 0.0;
-    private double pitch = 0.0;
+    private Angle yaw = Angle.ZERO;
+    private Angle roll = Angle.ZERO;
+    private Angle pitch = Angle.ZERO;
     private boolean keepConstantSize = true;
     private Vec4 referenceCenterPoint;
     private Globe globe;
@@ -152,9 +152,9 @@ public class ColladaModel
             dc.getView().pushReferenceCenter(dc, loc);
             gl.glRotated(position.getLongitude().degrees, 0, 1, 0);
             gl.glRotated(-position.getLatitude().degrees, 1, 0, 0);
-    		gl.glRotated(pitch, 1, 0, 0);
-    		gl.glRotated(roll, 0, 1, 0);
-    		gl.glRotated(-yaw, 0, 0, 1);
+    		gl.glRotated(pitch.degrees, 1, 0, 0);
+    		gl.glRotated(roll.degrees, 0, 1, 0);
+    		gl.glRotated(-yaw.degrees, 0, 0, 1);
     		gl.glScaled(localSize*scalex, localSize*scaley, localSize*scalez);
             
             drawArdor(dc);
@@ -368,27 +368,27 @@ public class ColladaModel
         return model;
     }
 
-    public double getYaw() {
+    public Angle getYaw() {
         return yaw;
     }
 
-    public void setYaw(double val) {
+    public void setYaw(Angle val) {
         this.yaw = val;
     }
  
-    public double getRoll() {
+    public Angle getRoll() {
         return roll;
     }
 
-    public void setRoll(double val) {
+    public void setRoll(Angle val) {
         this.roll = val;
     }
 
-    public double getPitch() {
+    public Angle getPitch() {
         return pitch;
     }
 
-    public void setPitch(double val) {
+    public void setPitch(Angle val) {
         this.pitch = val;
     }
     
