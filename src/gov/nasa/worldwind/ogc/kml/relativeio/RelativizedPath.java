@@ -77,13 +77,19 @@ public class RelativizedPath
 		String href = document.getHref();
 		KMLDoc parent = document.getParent();
 
-		boolean complete = document.isContainer() && !path.contains("..");
+		boolean complete = document.isContainer() && (path.length() < 3 || !path.substring(3).contains(".."));
 		if (complete || parent == null || !(parent instanceof RelativeKMLDoc) || href == null)
 		{
 			//this is as relative as we can go!
 
-			//if the document is a container (KMZ), a ../ at the start of a path refers to the
+			//If the document is a container (KMZ), a ../ at the start of a path refers to the
 			//KMZ as a directory, so remove it and carry on
+			
+			//Unfortunately, Google Earth supports treating both the KMZ file as the base directory and treating
+			//the KMZ's parent directory as the base directory (it first checks the first, and if it results in
+			//a HTTP error, checks the second). This means there are a lot of KMZ files that don't follow spec;
+			//we should probably add support for this at some stage.
+			
 			if (document.isContainer() && path.startsWith("../"))
 			{
 				path = path.substring(3);
@@ -94,6 +100,7 @@ public class RelativizedPath
 		RelativeKMLDoc relativeParent = (RelativeKMLDoc) parent;
 		if (document.isContainer())
 		{
+			//don't remove the filename from the end of href, as KMZ files (containers) should be treated as a directory
 			path = normalizePath(href + "/" + path);
 			return relativizePath(path, relativeParent); //recurse
 		}
