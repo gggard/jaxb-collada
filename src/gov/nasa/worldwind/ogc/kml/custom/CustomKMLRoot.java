@@ -181,7 +181,7 @@ public class CustomKMLRoot extends KMLRoot
 	 * @throws IOException
 	 *             if an error occurs while reading the KML document.
 	 */
-	protected CustomKMLRoot(KMLDoc docSource) throws IOException
+	public CustomKMLRoot(KMLDoc docSource) throws IOException
 	{
 		this(docSource, true);
 	}
@@ -201,7 +201,7 @@ public class CustomKMLRoot extends KMLRoot
 	 * @throws IOException
 	 *             if an error occurs while reading the KML document.
 	 */
-	protected CustomKMLRoot(KMLDoc docSource, boolean namespaceAware) throws IOException
+	public CustomKMLRoot(KMLDoc docSource, boolean namespaceAware) throws IOException
 	{
 		super(docSource, namespaceAware);
 	}
@@ -225,7 +225,7 @@ public class CustomKMLRoot extends KMLRoot
 	 *             if an I/O error occurs attempting to open the document
 	 *             source.
 	 */
-	protected CustomKMLRoot(String namespaceURI, KMLDoc docSource) throws IOException
+	public CustomKMLRoot(String namespaceURI, KMLDoc docSource) throws IOException
 	{
 		this(namespaceURI, docSource, true);
 	}
@@ -251,7 +251,7 @@ public class CustomKMLRoot extends KMLRoot
 	 *             if an I/O error occurs attempting to open the document
 	 *             source.
 	 */
-	protected CustomKMLRoot(String namespaceURI, KMLDoc docSource, boolean namespaceAware) throws IOException
+	public CustomKMLRoot(String namespaceURI, KMLDoc docSource, boolean namespaceAware) throws IOException
 	{
 		super(namespaceURI, docSource, namespaceAware);
 	}

@@ -106,7 +106,8 @@ public class RelativizedPath
 	}
 
 	/**
-	 * Normalize a path. This:<ul>
+	 * Normalize a path. This:
+	 * <ul>
 	 * <li>replaces back slashes '\' with forward slashes '/'</li>
 	 * <li>removed repeating slashes '//' (except after a colon ':')</li>
 	 * <li>normalizes the path (dir1/dir2/../dir3 becomes dir1/dir3)</li>
@@ -141,7 +142,7 @@ public class RelativizedPath
 			{
 				if (parts.get(i).equals(".."))
 				{
-					if (i > 0)
+					if (i > 0 && !parts.get(i - 1).equals(".."))
 					{
 						parts.remove(i - 1);
 						parts.remove(i - 1);
