@@ -11,16 +11,18 @@ package gov.nasa.worldwind.formats.models;
 
 import java.util.HashMap;
 
+import net.java.joglutils.model.ModelFactory;
 import net.java.joglutils.model.ModelLoadException;
 import net.java.joglutils.model.geometry.Model;
+import net.java.joglutils.model.loader.LoaderFactory;
 
 /**
+ * {@link ModelFactory} subclass that uses the {@link PickableLoaderFactory}
+ * instead of the {@link LoaderFactory}.
  * 
- * @author Brian Wood
- * @author Greg Rodgers
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class PickableModelFactory
+public class PickableModelFactory extends ModelFactory
 {
 	private static HashMap<Object, Model> modelCache = new HashMap<Object, Model>();
 

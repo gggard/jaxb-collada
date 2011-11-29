@@ -12,7 +12,6 @@ package gov.nasa.worldwind.formats.models.collada;
 
 import gov.nasa.worldwind.formats.models.PickableModel;
 import gov.nasa.worldwind.render.DrawContext;
-import gov.nasa.worldwind.util.Logging;
 
 import java.io.File;
 import java.net.URL;
@@ -29,72 +28,78 @@ import com.ardor3d.renderer.Camera;
 import com.ardor3d.renderer.ContextManager;
 import com.ardor3d.renderer.RenderContext;
 import com.ardor3d.renderer.jogl.JoglContextCapabilities;
-import com.ardor3d.scenegraph.Node;
 import com.ardor3d.util.resource.ResourceLocatorTool;
 import com.ardor3d.util.resource.SimpleResourceLocator;
 
 /**
  * Simplest example of loading a Collada model.
+ * 
+ * @author Tisham Dhar
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
+public class ArdorColladaLoader implements iLoader
+{
+	private static final String CONTEXT_KEY = "HACKED CONTEXT";
 
-public class ArdorColladaLoader implements iLoader{
-    
-    
-    public static Node loadColladaModel(String modelFileStr) throws Exception {
-    	
-        final Node root = new Node( "rootNode" );
+	public static ColladaNode loadColladaModel(String modelFileStr) throws Exception
+	{
+		final ColladaNode root = new ColladaNode("rootNode");
 
-        String modelDirStr = new File(modelFileStr).getParent();
-        String modelNameStr = new File(modelFileStr).getName();
+		String modelDirStr = new File(modelFileStr).getParent();
+		String modelNameStr = new File(modelFileStr).getName();
 
-        File modelDir = new File(modelDirStr);
-        modelDirStr = modelDir.getAbsolutePath();
-        
-        ColladaImporter importer = new ColladaImporter();
+		File modelDir = new File(modelDirStr);
+		modelDirStr = modelDir.getAbsolutePath();
 
-        SimpleResourceLocator modelLocator = new SimpleResourceLocator(new URL("file:" + modelDirStr));
-        SimpleResourceLocator textureLocator = new SimpleResourceLocator(new URL("file:" + modelDirStr));
-        importer.setModelLocator(modelLocator);
-        importer.setTextureLocator(textureLocator);
+		ColladaImporter importer = new ColladaImporter();
+		importer.setLoadAnimations(false);
 
-        ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_MODEL, modelLocator);
-        ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, textureLocator);
-        
-        ColladaStorage storage =  importer.load(modelNameStr);
-        root.attachChild(storage.getScene());
+		SimpleResourceLocator modelLocator = new SimpleResourceLocator(new URL("file:" + modelDirStr));
+		SimpleResourceLocator textureLocator = new SimpleResourceLocator(new URL("file:" + modelDirStr));
+		importer.setModelLocator(modelLocator);
+		importer.setTextureLocator(textureLocator);
 
-        root.updateGeometricState(0);
-        return root;
-    }
-    
-    public static void initializeArdorSystem(final DrawContext dc) {
+		ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_MODEL, modelLocator);
+		ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, textureLocator);
 
-        if (ContextManager.getContextForKey("HACKED CONTEXT") != null) {
-        	RenderContext rc = ContextManager.switchContext("HACKED CONTEXT");
-                return;
-        } 
+		ColladaStorage storage = importer.load(modelNameStr);
+		root.attachChild(storage.getScene());
+		root.setAssetData(storage.getAssetData());
 
-            Logging.logger().info("ARDOR INITIALIZER -->>  initializeArdorSystem");
+		root.updateGeometricState(0);
+		return root;
+	}
 
-            final JoglContextCapabilities caps = new JoglContextCapabilities(dc.getGL());
-            final RenderContext rc = new RenderContext(dc.getGLContext(), caps);
+	public static void initializeArdorSystem(final DrawContext dc)
+	{
+		if (ContextManager.getContextForKey(CONTEXT_KEY) != null)
+		{
+			ContextManager.switchContext(CONTEXT_KEY);
+			return;
+		}
 
-            ContextManager.addContext("HACKED CONTEXT", rc);
-            ContextManager.switchContext("HACKED CONTEXT");
-            Camera cam = new Camera() {
-                @Override
-                public FrustumIntersect contains(BoundingVolume bound) {
-                    return FrustumIntersect.Inside;
-                }
-            };
-            ContextManager.getCurrentContext().setCurrentCamera(cam);
-            AWTImageLoader.registerLoader();
-    }
+		final JoglContextCapabilities caps = new JoglContextCapabilities(dc.getGL());
+		final RenderContext rc = new RenderContext(dc.getGLContext(), caps);
+
+		ContextManager.addContext(CONTEXT_KEY, rc);
+		ContextManager.switchContext(CONTEXT_KEY);
+		
+		//disable Ardor3d's frustum culling, as we don't use Ardor3d's camera system:
+		Camera cam = new Camera()
+		{
+			@Override
+			public FrustumIntersect contains(BoundingVolume bound)
+			{
+				return FrustumIntersect.Inside;
+			}
+		};
+		ContextManager.getCurrentContext().setCurrentCamera(cam);
+		AWTImageLoader.registerLoader();
+	}
 
 	@Override
-	public Model load(String path) throws ModelLoadException {
-		// TODO Auto-generated method stub
-		Model model = new PickableModel(path);
-		return model;
+	public Model load(String path) throws ModelLoadException
+	{
+		return new PickableModel(path);
 	}
 }

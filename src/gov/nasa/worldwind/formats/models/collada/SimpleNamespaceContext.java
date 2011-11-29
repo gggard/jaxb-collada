@@ -10,7 +10,6 @@ import java.util.*;
  */
 public class SimpleNamespaceContext implements NamespaceContext
 {
-
     private Map<String, String> urisByPrefix = new HashMap<String, String>();
     private Map<String, Set<String>> prefixesByURI = new HashMap<String, Set<String>>();
 
@@ -55,7 +54,7 @@ public class SimpleNamespaceContext implements NamespaceContext
         return (String) getPrefixes(namespaceURI).next();
     }
 
-    public Iterator getPrefixes(String namespaceURI)
+    public Iterator<?> getPrefixes(String namespaceURI)
     {
         if (namespaceURI == null)
             throw new IllegalArgumentException("namespaceURI cannot be null");
