@@ -9,7 +9,7 @@ import gov.nasa.worldwind.ogc.kml.KMLMultiGeometry;
 import gov.nasa.worldwind.ogc.kml.KMLPlacemark;
 import gov.nasa.worldwind.ogc.kml.KMLPoint;
 import gov.nasa.worldwind.ogc.kml.KMLPolygon;
-import gov.nasa.worldwind.ogc.kml.custom.impl.KMLColladaModel;
+import gov.nasa.worldwind.ogc.kml.custom.impl.CustomKMLModelPlacemarkImpl;
 import gov.nasa.worldwind.ogc.kml.impl.KMLRenderable;
 import gov.nasa.worldwind.ogc.kml.impl.KMLTraversalContext;
 import gov.nasa.worldwind.render.DrawContext;
@@ -72,7 +72,7 @@ public class CustomKMLPlacemark extends KMLPlacemark
 	@Override
 	protected KMLRenderable selectModelRenderable(KMLTraversalContext tc, KMLAbstractGeometry geom)
 	{
-		return new KMLColladaModel(tc, (KMLModel) geom);
+		return new CustomKMLModelPlacemarkImpl(tc, (KMLModel) geom);
 	}
 
 	@Override

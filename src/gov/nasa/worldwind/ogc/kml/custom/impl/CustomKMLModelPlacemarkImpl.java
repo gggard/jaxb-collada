@@ -22,12 +22,12 @@ import com.ardor3d.util.resource.ResourceLocatorTool;
 import com.ardor3d.util.resource.ResourceSource;
 import com.ardor3d.util.resource.URLResourceSource;
 
-public class KMLColladaModel extends ColladaModel implements KMLRenderable{
-	private static final Log LOG = LogFactory.getLog(KMLColladaModel.class);
+public class CustomKMLModelPlacemarkImpl extends ColladaModel implements KMLRenderable{
+	private static final Log LOG = LogFactory.getLog(CustomKMLModelPlacemarkImpl.class);
 	
 	KMLRoot kmlroot;
 	
-	public KMLColladaModel(KMLTraversalContext tc, final KMLModel kmlmodel)
+	public CustomKMLModelPlacemarkImpl(KMLTraversalContext tc, final KMLModel kmlmodel)
 	{
 		super((String)kmlmodel.getRoot().resolveReference(kmlmodel.getLink().getHref()),
 				new Position(
