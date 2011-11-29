@@ -35,9 +35,9 @@ public class KMLModelImpl extends ColladaModel implements KMLRenderable{
         		Angle.fromDegrees(kmlmodel.getLocation().getLongitude()),
         		kmlmodel.getLocation().getAltitude()));
 		this.kmlroot = kmlmodel.getRoot();
-		this.setPitch(kmlmodel.getOrientation().getTilt());
-		this.setRoll(kmlmodel.getOrientation().getRoll());
-		this.setYaw(kmlmodel.getOrientation().getHeading());
+		this.setPitch(Angle.fromDegrees(kmlmodel.getOrientation().getTilt()));
+		this.setRoll(Angle.fromDegrees(kmlmodel.getOrientation().getRoll()));
+		this.setYaw(Angle.fromDegrees(kmlmodel.getOrientation().getHeading()));
 
 		ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, new ResourceLocator() {
 			
