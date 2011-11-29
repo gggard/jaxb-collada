@@ -7,12 +7,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.ardor3d.image.util.AWTImageLoader;
 import com.ardor3d.scenegraph.Node;
 
 public class ArdorColladaTest {
 
 	@Before
 	public void setUp() throws Exception {
+		AWTImageLoader.registerLoader();
 	}
 
 	@After
