@@ -72,7 +72,7 @@ public class CustomKMLPlacemark extends KMLPlacemark
 	@Override
 	protected KMLRenderable selectModelRenderable(KMLTraversalContext tc, KMLAbstractGeometry geom)
 	{
-		return new CustomKMLModelPlacemarkImpl(tc, (KMLModel) geom);
+		return new CustomKMLModelPlacemarkImpl(tc, this, geom);
 	}
 
 	@Override
