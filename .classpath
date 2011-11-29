@@ -25,6 +25,7 @@
 	<classpathentry kind="lib" path="extlib/saxpath.jar"/>
 	<classpathentry kind="lib" path="extlib/worldwind.jar"/>
 	<classpathentry kind="lib" path="extlib/commons-logging-api-1.1.1.jar"/>
+	<classpathentry kind="lib" path="extlib/worldwindx.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
