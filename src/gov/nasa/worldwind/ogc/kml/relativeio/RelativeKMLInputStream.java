@@ -2,10 +2,12 @@ package gov.nasa.worldwind.ogc.kml.relativeio;
 
 import gov.nasa.worldwind.ogc.kml.io.KMLDoc;
 import gov.nasa.worldwind.ogc.kml.io.KMLInputStream;
+import gov.nasa.worldwind.util.WWIO;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URL;
 
 /**
  * The {@link RelativeKMLInputStream} class is a subclass of
@@ -55,7 +57,16 @@ public class RelativeKMLInputStream extends KMLInputStream implements RelativeKM
 			return relativized.relativeTo.getSupportFileStream(path);
 		}
 
-		return super.getSupportFileStream(path);
+		InputStream inputStream = super.getSupportFileStream(path);
+		if (inputStream != null)
+			return inputStream;
+
+		//converting the path to a URL will only work if the path has a protocol
+		URL url = WWIO.makeURL(path);
+		if (url != null)
+			return url.openStream();
+
+		return null;
 	}
 
 	@Override
@@ -76,6 +87,15 @@ public class RelativeKMLInputStream extends KMLInputStream implements RelativeKM
 			}
 		}
 
-		return super.getSupportFilePath(path);
+		String superPath = super.getSupportFilePath(path);
+		if (superPath != null)
+			return superPath;
+
+		//converting the path to a URL will only work if the path has a protocol
+		URL url = WWIO.makeURL(path);
+		if (url != null)
+			return url.toExternalForm();
+
+		return null;
 	}
 }

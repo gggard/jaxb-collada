@@ -2,11 +2,13 @@ package gov.nasa.worldwind.ogc.kml.relativeio;
 
 import gov.nasa.worldwind.ogc.kml.io.KMLDoc;
 import gov.nasa.worldwind.ogc.kml.io.KMLFile;
+import gov.nasa.worldwind.util.WWIO;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 
 /**
  * The {@link RelativeKMLFile} class is a subclass of {@link KMLFile} that
@@ -69,6 +71,11 @@ public class RelativeKMLFile extends KMLFile implements RelativeKMLDoc
 			}
 		}
 
+		//converting the path to a URL will only work if the path has a protocol
+		URL url = WWIO.makeURL(path);
+		if (url != null)
+			return url.openStream();
+
 		return null;
 	}
 
@@ -103,6 +110,11 @@ public class RelativeKMLFile extends KMLFile implements RelativeKMLDoc
 				return childFile.getAbsolutePath();
 			}
 		}
+
+		//converting the path to a URL will only work if the path has a protocol
+		URL url = WWIO.makeURL(path);
+		if (url != null)
+			return url.toExternalForm();
 
 		return null;
 	}

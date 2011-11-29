@@ -106,7 +106,12 @@ public class RelativeKMZInputStream extends KMZInputStream implements RelativeKM
 				return remoteFileURI.toString();
 			}
 		}
-
+		
+		//converting the path to a URL will only work if the path has a protocol
+		URL url = WWIO.makeURL(path);
+		if (url != null)
+			return url.toExternalForm();
+		
 		return null;
 	}
 
