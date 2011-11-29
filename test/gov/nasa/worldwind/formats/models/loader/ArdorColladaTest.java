@@ -1,6 +1,7 @@
 package gov.nasa.worldwind.formats.models.loader;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import gov.nasa.worldwind.formats.models.collada.ArdorColladaLoader;
 
 import org.junit.After;
 import org.junit.Before;
