@@ -1,6 +1,6 @@
 package gov.nasa.worldwind.ogc.kml.custom.impl;
 
-import gov.nasa.worldwind.formats.models.collada.Ardor3DModel;
+import gov.nasa.worldwind.formats.models.collada.ColladaModel;
 import gov.nasa.worldwind.formats.models.collada.KMLArdorColladaLoader;
 import gov.nasa.worldwind.geom.Angle;
 import gov.nasa.worldwind.geom.Position;
@@ -22,7 +22,7 @@ import com.ardor3d.util.resource.ResourceLocatorTool;
 import com.ardor3d.util.resource.ResourceSource;
 import com.ardor3d.util.resource.URLResourceSource;
 
-public class KMLModelImpl extends Ardor3DModel implements KMLRenderable{
+public class KMLModelImpl extends ColladaModel implements KMLRenderable{
 	private static final Log LOG = LogFactory.getLog(KMLModelImpl.class);
 	
 	KMLRoot kmlroot;

@@ -44,10 +44,10 @@ import com.ardor3d.renderer.state.record.TextureStateRecord;
 import com.ardor3d.renderer.state.record.TextureUnitRecord;
 import com.ardor3d.scenegraph.Node;
 
-public class Ardor3DModel 
+public class ColladaModel 
 	implements Renderable, Scene, Adjustable
 {
-	private static final Log LOG = LogFactory.getLog(Ardor3DModel.class);
+	private static final Log LOG = LogFactory.getLog(ColladaModel.class);
 	
 	private Position position;
     protected Model model;
@@ -72,7 +72,7 @@ public class Ardor3DModel
 
 	private String path;
 
-    public Ardor3DModel(String path, Position pos) {
+    public ColladaModel(String path, Position pos) {
     	this.path = path;
         try {
             this.model = PickableModelFactory.createModel(path);
