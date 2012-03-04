@@ -127,8 +127,10 @@ public class DisplayListRenderer implements iModel3DRenderer
 		boolean isMaterialEnabled = gl.glIsEnabled(GL.GL_COLOR_MATERIAL);
 
 		// check lighting
-		if (!model.isUsingLighting())
-		{
+		if (model.isUsingLighting()){
+			gl.glEnable(GL.GL_LIGHTING);        
+		} 
+		else {
 			gl.glDisable(GL.GL_LIGHTING);
 		}
 
