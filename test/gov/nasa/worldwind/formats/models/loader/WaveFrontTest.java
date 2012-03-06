@@ -1,13 +1,10 @@
 package gov.nasa.worldwind.formats.models.loader;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-
-import gov.nasa.worldwind.formats.models.ModelLoadException;
-import gov.nasa.worldwind.formats.models.geometry.Material;
-import gov.nasa.worldwind.formats.models.geometry.Mesh;
-import gov.nasa.worldwind.formats.models.geometry.Model;
 import junit.framework.TestCase;
+import net.java.joglutils.model.ModelLoadException;
+import net.java.joglutils.model.geometry.Mesh;
+import net.java.joglutils.model.geometry.Model;
+import net.java.joglutils.model.loader.WaveFrontLoader;
 
 public class WaveFrontTest extends TestCase {
 
